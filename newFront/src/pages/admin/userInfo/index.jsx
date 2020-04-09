@@ -3,6 +3,7 @@ import React from 'react';
 import { Spin, Avatar, Upload, message, Cascader  } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import styles from './index.less';
+import { connect } from 'dva';
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -74,9 +75,14 @@ class UserInfo extends React.Component {
   }
 
   componentDidMount(){
+    const {dispatch} = this.props
     setTimeout(()=>{
       this.setLoading()
     },3000)
+
+    dispatch({
+      type:'logincheck/fetch',
+    })
   }
 
  
@@ -170,4 +176,7 @@ class UserInfo extends React.Component {
   }
 }
  
-export default UserInfo;
+export default connect(({ userinfo, loading}) => ({
+  userinfo,
+  loading: loading.models.userinfo
+}))(UserInfo);

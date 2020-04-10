@@ -1,17 +1,23 @@
 // 引入模块
+var express = require('express');
 const mysql = require('mysql')
 
 // 创建连接对象
-const connect = mysql.createConnection({
+const db = mysql.createConnection({
   host: 'localhost',
-  port:'3306',
+  port:3306,
   user: 'root',
-  password: 'qweasd123456',
+  password: 'root',
   database: 'renting'
 })
 
 // 连接
-connect.connect()
-console.log('【数据库已连接...】');
+db.connect(function(err){
+  if(err){
+    console.log("连接失败")
+  }else {
+    console.log('连接成功')
+  }
+})
 
-module.exports = connect;
+module.exports = db;  

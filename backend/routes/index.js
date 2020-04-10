@@ -24,12 +24,38 @@ router.all("*",function(req,res,next){
       next();
 })
 
+//登录
 router.get('/getlogin', (req, res) => {
-  db.query(err=>{
-    console.log(err)
+  console.log(req)
+  let sql = `SELECT * FROM userInfo WHERE userEmail = ${req.params.email} OR  userPassword = ${req.params.password}`;
+  db.query(sql,(err,result) => {
+      if(err){
+        console.log(err)
+      }else {
+        console.log(result);
+        res.send(result)
+      }
   })
-  console.log(11111)
-  res.send('没有cuo')
+})
+
+//注册
+router.get('/register',(req,res) =>{
+  let sql = `INSERT INTO userInfo (userName,userImg,userEmail,userLocation,userPassword)
+    VALUES (${req.params.name},${req.params.img},${req.params.email},${req.params.location},${req.params.password})
+  `
+  db.query(sql,(err,result) => {
+    if(err){
+      console.log(err)
+      res.send(err)
+    }else{
+      console.log(result)
+      res.send({
+        status:'ok',
+        result:result
+      })
+    }
+  })
+
 })
 
 module.exports = router;

@@ -82,6 +82,10 @@ class UserInfo extends React.Component {
 
     dispatch({
       type:'logincheck/fetch',
+      payload:{
+        email:'22822@qq.com',
+        password:'123456'
+      }
     })
   }
 

@@ -3,7 +3,6 @@ import styles from './HomeModule.less';
 import Point from '../../../assets/rightPoint.png';
 
 function  HomeModule(props){
-    console.log(props.Pic)
    return(
            <div className={styles.entrance_item}>
                <div className={styles.entrance_desc}>

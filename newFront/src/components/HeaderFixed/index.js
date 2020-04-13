@@ -3,6 +3,7 @@ import styles from './index.less';
 import logRegImg from '../../assets/logReg.png';
 import Login from '../../pages/Home/Login';
 import Register from '../../pages/Home/Register';
+import { Link } from 'react-router-dom';
 
 class HeaderFix extends Component {
     constructor(props) {
@@ -31,9 +32,9 @@ class HeaderFix extends Component {
                                 </div>)
                         }
                         <ul>
-                            <li>首页</li>
-                            <li>租房</li>
-                            <li>服务</li>
+                            <li><Link to="/home">首页</Link></li>
+                            <li><Link to="/houseinfo">租房</Link></li>
+                            <li><Link to="/service">服务</Link></li>
                             <li>
                                 {
                                     this.state.isLandlord

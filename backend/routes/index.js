@@ -26,16 +26,16 @@ router.all("*",function(req,res,next){
 
 //登录
 router.get('/getlogin', (req, res) => {
-  console.log(req)
-  let sql = `SELECT * FROM userInfo WHERE userEmail = ${req.params.email} OR  userPassword = ${req.params.password}`;
-  db.query(sql,(err,result) => {
-      if(err){
-        console.log(err)
-      }else {
-        console.log(result);
-        res.send(result)
-      }
-  })
+  // let sql = `SELECT * FROM userInfo WHERE userEmail = ${req.params.email} OR  userPassword = ${req.params.password}`;
+  // db.query(sql,(err,result) => {
+  //     if(err){
+  //       console.log(err)
+  //     }else {
+  //       console.log(result);
+  //       res.send(result)
+  //     }
+  // })
+  res.send(1111)
 })
 
 //注册

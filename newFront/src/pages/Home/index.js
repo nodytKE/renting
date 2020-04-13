@@ -5,11 +5,29 @@ import fangDaJImg from '../../assets/fangdj.png';
 import logRegImg from '../../assets/logReg.png';
 import HomeBox from '../../components/HomeBox/index';
 import Login from './Login';
-import Register from './Register'
+import Register from './Register';
+import { Link } from 'react-router-dom';
 
-function Home() {
-  return (
-    <div>
+
+class Home extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { 
+      inputValue:''
+     }
+  }
+
+inputChange = (e) => {
+
+  this.setState({
+    inputValue:e.target.value
+  })
+}
+
+
+  render() { 
+    return ( 
+      <div>
       
       <div className={styles.Home_head}>
         <a className={styles.logo}>
@@ -34,15 +52,16 @@ function Home() {
         <p>品质租房选熊熊</p>
         <span>海量省心真房源，开始寻找你的家</span>
         <div className={styles.searchBar}>
-          <input placeholder="请输入区域、商圈或小区名开始找房"></input>
-          <div className={styles.searchBtn}>
-            <img src={fangDaJImg}></img>
+          <input placeholder="请输入区域、商圈或小区名开始找房" onChange={this.inputChange} ></input>
+          <div className={styles.searchBtn} >
+          <Link to={{pathname:'/houseinfo', state:{inputValue:this.state.inputValue}}}>  <img src={fangDaJImg}></img></Link>
           </div>
         </div>
       </div>
       <HomeBox />
     </div>
-  );
+     );
+  }
 }
-
+ 
 export default Home;

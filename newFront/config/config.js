@@ -91,8 +91,8 @@ export default {
       component: './UserInfo',
     },
     {
-      path:'/housedetail',
-      component:'../pages/HouseDetail',
+      path: '/housedetail',
+      component: '../pages/HouseDetail',
     },
     {
       name: '房屋信息',
@@ -121,6 +121,12 @@ export default {
           icon: 'form',
           path: '/admin/tag',
           component: './admin/tag',
+        },
+        {
+          name: '成为房东',
+          icon: 'smile',
+          path: '/admin/becomeowner',
+          component: './becomeOwner',
         },
       ],
     },

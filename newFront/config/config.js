@@ -122,12 +122,6 @@ export default {
           path: '/admin/tag',
           component: './admin/tag',
         },
-        {
-          name: '成为房东',
-          icon: 'smile',
-          path: '/admin/becomeowner',
-          component: './becomeOwner',
-        },
       ],
     },
     {

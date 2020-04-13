@@ -79,8 +79,10 @@ class UserInfo extends React.Component {
     setTimeout(()=>{
       this.setLoading()
     },3000)
+    console.log(1111)
 
     dispatch({
+      
       type:'logincheck/fetch',
       // payload:{
       //   email:'22822@qq.com',

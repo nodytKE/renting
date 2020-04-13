@@ -26,7 +26,7 @@ router.all("*",function(req,res,next){
 
 //登录
 router.get('/getlogin', (req, res) => {
-  // let sql = `SELECT * FROM userInfo WHERE userEmail = ${req.params.email} OR  userPassword = ${req.params.password}`;
+  let sql = `SELECT * FROM userInfo WHERE userEmail = ${req.params.email} OR  userPassword = ${req.params.password}`;
   // db.query(sql,(err,result) => {
   //     if(err){
   //       console.log(err)
@@ -35,7 +35,7 @@ router.get('/getlogin', (req, res) => {
   //       res.send(result)
   //     }
   // })
-  res.send(1111)
+  res.send('200')
 })
 
 //注册

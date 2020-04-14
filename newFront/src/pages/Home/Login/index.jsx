@@ -1,8 +1,8 @@
 import { Modal, Button, Form, Input, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import styles from './index.less';
 import React from 'react';
 import {connect} from 'dva'
+import styles from './index.less';
 
 class Login extends React.Component {
   state = { 
@@ -18,7 +18,6 @@ class Login extends React.Component {
   };
 
   handleOk = e => {
-    console.log(e);
     this.setState({
       visible: false,
     });
@@ -46,11 +45,9 @@ class Login extends React.Component {
   }
   
     onFinish = values => {
-      console.log('Received values of form: ', values);
     };
   
   handleCancel = e => {
-    console.log(e);
     this.setState({
       visible: false,
     });

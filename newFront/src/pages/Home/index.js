@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { connect } from 'dva';
 import styles from './Home.less';
 import logoUrlImg from '../../assets/uugai.com_1582427231866.png';
 import fangDaJImg from '../../assets/fangdj.png';
@@ -6,9 +8,6 @@ import logRegImg from '../../assets/logReg.png';
 import HomeBox from '../../components/HomeBox/index';
 import Login from './Login';
 import Register from './Register';
-import { Link } from 'react-router-dom';
-import { connect } from 'dva';
-import { Col } from 'antd';
 import userInfo from '../admin/userInfo';
 
 
@@ -29,8 +28,8 @@ inputChange = (e) => {
 
   render() { 
     const{ logincheck:{userinfo}} =this.props;
-    if(userInfo[0].isOwner){
-      console.log(userinfo[0].isOwner)
+    if(userInfo[0]){
+      console.log(userinfo[0])
     }
     return ( 
       <div>

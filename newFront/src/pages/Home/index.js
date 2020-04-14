@@ -7,6 +7,9 @@ import HomeBox from '../../components/HomeBox/index';
 import Login from './Login';
 import Register from './Register';
 import { Link } from 'react-router-dom';
+import { connect } from 'dva';
+import { Col } from 'antd';
+import userInfo from '../admin/userInfo';
 
 
 class Home extends React.Component {
@@ -24,8 +27,11 @@ inputChange = (e) => {
   })
 }
 
-
   render() { 
+    const{ logincheck:{userinfo}} =this.props;
+    if(userInfo[0].isOwner){
+      console.log(userinfo[0].isOwner)
+    }
     return ( 
       <div>
       
@@ -45,10 +51,14 @@ inputChange = (e) => {
           <li>租房</li>
           <li>服务</li>
           <li>
-            <a className={styles.owner}>成为房东</a>
+           {
+             userinfo.isOwner ? 
+           <a className={styles.owner}>管理房源</a>
+            :
+           <a className={styles.owner}>成为房东</a>
+          }
           </li>
         </ul>
-
         <p>品质租房选熊熊</p>
         <span>海量省心真房源，开始寻找你的家</span>
         <div className={styles.searchBar}>
@@ -64,4 +74,7 @@ inputChange = (e) => {
   }
 }
  
-export default Home;
+export default connect(({logincheck,loading})=>({
+  logincheck,
+  loading:loading.models.logincheck
+}))(Home);

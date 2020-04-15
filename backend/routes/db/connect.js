@@ -4,17 +4,17 @@ const mysql = require('mysql')
 
 // 创建连接对象
 const db = mysql.createConnection({
-  host: 'localhost',
+  host: '49.233.131.99',
   port:3306,
-  user: 'root',
-  password: 'root',
+  user: 'renting',
+  password: '5346jkPaWkcbXHkL',
   database: 'renting'
 })
 
 // 连接
 db.connect(function(err){
   if(err){
-    console.log("连接失败")
+    console.log(err)
   }else {
     console.log('连接成功')
   }

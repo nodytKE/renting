@@ -43,10 +43,6 @@ class Login extends React.Component {
       password:e.target.value
     })
   }
-  
-    onFinish = values => {
-    };
-  
   handleCancel = e => {
     this.setState({
       visible: false,
@@ -71,7 +67,7 @@ class Login extends React.Component {
             <Form
       name="normal_login"
       className="login-form"
-      initialValues={{
+      initialvalues={{
         remember: true,
       }}
       onFinish={this.onFinish}

@@ -85,12 +85,6 @@ export default {
       component: '../pages/home',
     },
     {
-      name: '空白页面',
-      icon: 'smile',
-      path: '/userinfo',
-      component: './UserInfo',
-    },
-    {
       path: '/housedetail',
       component: '../pages/HouseDetail',
     },
@@ -105,7 +99,7 @@ export default {
       component: '../layouts/BasicLayout',
       routes: [
         {
-          path: '/admin/home',
+          path: '/admin/home/:id',
           name: '个人中心',
           icon: 'form',
           component: '../pages/admin/userInfo',

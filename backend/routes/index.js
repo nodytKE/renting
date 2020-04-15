@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
-
 var app = express()
+var multer = require('multer')
+var upload = multer({ dest: 'uploads/' })
 
 const db =require('./db/connect')
 
@@ -10,23 +11,19 @@ router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-router.all("*",function(req,res,next){
-  //设置允许跨域的域名，*代表允许任意域名跨域
-  res.header('Access-Control-Allow-Origin',"*");
-  //允许的header类型
-  res.header("Access-Control-Allow-Headers","Authorization");
-  //跨域允许的请求方式 
-  res.header("Access-Control-Allow-Methods","DELETE,PUT,POST,GET,OPTIONS");
-  res.header("Access-Control-Allow-Credentials","true")
-  if (req.method.toLowerCase() == 'options')
-      res.send(200);  //让options尝试请求快速结束
-  else
-      next();
-})
+router.all('*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
+  res.header("X-Powered-By",' 3.2.1')
+  res.header("Content-Type", "application/json;charset=utf-8");
+  next();
+  });
 
 //登录
 router.get('/getlogin', (req, res) => {
-  let sql = `SELECT * FROM userInfo WHERE userEmail = '${req.query.email}' AND userPassword = '${req.query.password}'`;
+  let sql = `SELECT * FROM userInfo WHERE user_email = '${req.query.email}' AND user_password = '${req.query.password}'`;
   db.query(sql,(err,result) => {
       if(result.length>0){
         res.send({
@@ -43,10 +40,23 @@ router.get('/getlogin', (req, res) => {
   })
 })
 
+// 通过id查询用户
+
+router.get('/getuserinfo',(req,res) => {
+  let sql =`select * from userInfo where user_id = '${req.query.id}'`;
+  db.query(sql,(err,result) => {
+    if(result){
+      res.send({
+        data:result
+      })
+    }
+  })
+})
+
 //注册
 router.post('/register',(req,res) =>{
-  let sql1 = `insert into userInfo(userName,userImg,userEmail,userLocation,userPassword) values('${req.body.name}','${req.body.img}','${req.body.email}','${req.body.location}','${req.body.password}' )`;
-  let sql2 = `select * from userInfo where userEmail ='${req.body.email}'`
+  let sql1 = `insert into userInfo(user_name,user_img,user_email,user_location,user_password) values('${req.body.name}','${req.body.img}','${req.body.email}','${req.body.location}','${req.body.password}' )`;
+  let sql2 = `select * from userInfo where user_email ='${req.body.email}'`
   db.query(sql2,(err,result) => {
     if(result.length>0){
       res.send({
@@ -73,7 +83,8 @@ router.post('/register',(req,res) =>{
 
 //修改用户信息
 router.post('/setuser',(req,res) => {
-  let sql=`update userInfo set userName='${req.body.name} ', userImg='${req.body.img}', userLocation='${req.body.location}', userEmail='${req.body.email}' where userId='${req.body.id}'`
+  console.log(req.body)
+  let sql=`update userInfo set user_name='${req.body.name} ', user_img='${req.body.img}', user_location='${req.body.location}', user_email='${req.body.email}' where user_id='${req.body.id}'`
   db.query(sql,(err,result)=> {
     if(err){
       res.send({
@@ -90,9 +101,7 @@ router.post('/setuser',(req,res) => {
   })
 })
 
-
 // 获取房屋信息
-
 router.get('/getallhouse',(req,res) => {
   let sql = `select * from houseInfo `
   db.query(sql,(err,result) => {
@@ -104,6 +113,18 @@ router.get('/getallhouse',(req,res) => {
     }else{
       res.send({
         status:200,
+        data:result
+      })
+    }
+  })
+})
+
+// 根据房屋id查询房屋信息
+router.get('/gethousedetail',(req,res) => {
+  let sql = `select * from houseInfo where house_id = '${req.query.id}'`
+  db.query(sql,(err,result) => {
+    if(result){
+      res.send({
         data:result
       })
     }
@@ -216,6 +237,32 @@ router.post('/stopsell',(req,res) => {
       })
     }
   })
+})
+
+// 根据某个房源id查看房东旗下房源
+router.get('/getsomehouse',(req,res)=>{
+  let sql = ` select * from houseInfo where house_id in (select house_id from ownerHouse where user_id =(select user_id from ownerHouse where house_id = '${req.query.id}'))`
+  db.query(sql,(err,result) =>{
+    if(result){
+      res.send(result)
+    }
+  })
+})
+
+//根据某个房源获取房东的信息
+router.get('/getownerinfo',(req,res) => {
+  let sql = `select * from userInfo where user_id = (select user_id from ownerHouse where house_id = '${req.query.id}'))`
+  db.query(sql,(err,result) => {
+    if(result){
+      res.send(result)
+    }
+  })
+})
+
+// 图像上传
+router.post('/admin/uploadhome',upload.single('avatar'),(req,res)=>{
+  console.log(req.file)
+  res.send('11')
 })
 
 module.exports = router;

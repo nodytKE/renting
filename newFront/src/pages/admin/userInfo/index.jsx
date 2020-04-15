@@ -1,6 +1,6 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
-import { Spin, Avatar, Upload, message, Cascader  } from 'antd';
+import { Spin, Avatar, Upload, message, Cascader, Button  } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import { connect } from 'dva';
@@ -25,72 +25,57 @@ function beforeUpload(file) {
 
  // 级联选择器
 
- const options = [
-  {
-    value: 'zhejiang',
-    label: 'Zhejiang',
-    children: [
-      {
-        value: 'hangzhou',
-        label: 'Hangzhou',
-        children: [
-          {
-            value: 'xihu',
-            label: 'West Lake',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    value: 'jiangsu',
-    label: 'Jiangsu',
-    children: [
-      {
-        value: 'nanjing',
-        label: 'Nanjing',
-        children: [
-          {
-            value: 'zhonghuamen',
-            label: 'Zhong Hua Men',
-          },
-        ],
-      },
-    ],
-  },
-];
-
-function onChange(value) {
-  console.log(value);
-}
-
+ 
 
 class UserInfo extends React.Component {
   constructor(props) {
+  
     super(props);
     this.state = { 
       loading:true,
       picLoading:false,
+      name:'',
+      email:'',
+      location:'',
+      password:'',
+      isOn:0
      };
   }
 
+// 获取用户信息
   componentDidMount(){
-    const {dispatch} = this.props
     setTimeout(()=>{
       this.setLoading()
     },3000)
-    console.log(1111)
+
+    this.getInfo()
+  
+  }
+  
+
+  // 临时用
+  getInfo=() => {
+    const {dispatch} = this.props
 
     dispatch({
-      
       type:'logincheck/fetch',
-      // payload:{
-      //   email:'22822@qq.com',
-      //   password:'123456'
-      // }
+      payload:{
+        email:'2222@qq.com',
+        password:'123456'
+      }
+    }).then(()=>{
+        const { logincheck: { userinfo } } = this.props;
+    userinfo.length>0 ?
+    this.setState({
+      name:userinfo[0].user_name,
+      email:userinfo[0].user_email,
+      location:userinfo[0].user_location,
+      password:userinfo[0].user_password,
+    }): ''
+  console.log(userinfo)
     })
+  
   }
-
  
   // 上传头像
   handleChange = info => {
@@ -114,6 +99,57 @@ class UserInfo extends React.Component {
     })
   }
 
+  onChangeName =e => {
+    this.setState({
+      name:e.target.value
+    })
+  }
+
+  onChangeEmail = e => {
+    this.setState({
+      email:e.target.value
+    })
+  }
+
+  onChangeLocation = e => {
+    this.setState({
+      location:e.target.location
+    })
+  }
+
+  changePassOk=() => {
+    this.setState({
+      isOn:1,
+    })
+  }
+
+  changePassNo= () => {
+    this.setState({
+      isOn:0
+    })
+  }
+
+  onChangePassword = e => {
+    this.setState({
+      password:e.target.value
+    })
+  }
+
+  // 提交更改
+  submitChange =() => {
+    const {dispatch} = this.props;
+    dispatch({
+      type:'logincheck/setuserInfo',
+      payload:{
+        email:this.state.email,
+        name:this.state.name,
+        location:this.state.location,
+        password:this.state.password,
+        id:1
+      }
+    })
+  }
+
   render() { 
     const uploadButton = (
       <div>
@@ -122,7 +158,8 @@ class UserInfo extends React.Component {
       </div>
     );
     const { imageUrl } = this.state;
-    
+  
+
     return ( 
       <PageHeaderWrapper className={styles.main}>
       <div className={styles.avatar}>
@@ -132,7 +169,8 @@ class UserInfo extends React.Component {
         listType="picture-card"
         className="avatar-uploader"
         showUploadList={false}
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+        method="POST"
+        action="http://localhost:3000/admin/uploadhome"
         beforeUpload={beforeUpload}
         onChange={this.handleChange}
       >
@@ -145,26 +183,59 @@ class UserInfo extends React.Component {
          <tr>
            <td className={styles.tag}>昵称</td>
            <td colSpan="2" className={styles.name_inp}>
-             <input type="text" style={{width:180}} className={styles.ui_inp} />
+             <input 
+             type="text" 
+             style={{width:180}} 
+             className={styles.ui_inp} 
+            defaultValue={this.state.name} 
+            onChange={this.onChangeName}
+             />
            </td>
          </tr>
          <tr>
            <td className={styles.tag}>邮箱</td>
            <td colSpan="2" className={styles.name_inp}>
-             <input type="text" className={styles.ui_inp} />
+             <input 
+             type="text" 
+             className={styles.ui_inp} 
+             defaultValue={this.state.email}
+             onChange={this.onChangeEmail}
+             />
            </td>
          </tr>
          <tr>
            <td className={styles.tag}>居住地</td>
            <td colSpan="2" className={styles.name_inp}>
-           <Cascader options={options} size="large" onChange={onChange} placeholder="请选择居住地" />
+           <input 
+             type="text" 
+             className={styles.ui_inp} 
+             defaultValue={this.state.location}
+             onChange={this.onChangeLocation}
+             />
            </td>
          </tr>
          <tr>
            <td className={styles.tag}>密码</td>
            <td colSpan="2" className={styles.name_inp}>
-             <a className={styles.changePass}>修改密码</a>
+             <a className={styles.changePass} style={{display: this.state.isOn ? 'none' :'block'}} onClick={this.changePassOk}>修改密码</a>
+             <input
+              type="password"
+              className={styles.ui_inp} 
+              style={{display: this.state.isOn? 'block' : 'none'}}
+              defaultValue={this.state.password}
+              onChange={this.onChangePassword}
+              onBlur={this.changePassNo}
+             />
            </td>
+         </tr>
+         <tr>
+           <td/>
+          <td>
+          <Button 
+            className={styles.submit}
+            onClick={this.submitChange}
+           >保存更改</Button>
+          </td>
          </tr>
        </tbody>
      </table>
@@ -182,7 +253,7 @@ class UserInfo extends React.Component {
   }
 }
  
-export default connect(({ userinfo, loading}) => ({
-  userinfo,
+export default connect(({ logincheck, loading}) => ({
+  logincheck,
   loading: loading.models.userinfo
 }))(UserInfo);

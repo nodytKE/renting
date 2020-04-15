@@ -7,6 +7,7 @@ import pic4 from '../../assets/pic4.jpg';
 import HouseCard from '@/components/HouseCard';
 import { Carousel } from 'antd';
 import styles from './index.less';
+import {connect} from 'dva'
 
 
 class HouseDetail extends Component {
@@ -15,7 +16,58 @@ class HouseDetail extends Component {
         this.state = {}
     }
 
+    componentDidMount(){
+        this.getHouseDetail()
+        this.getSomeHouse()
+    }
+
+    getHouseDetail=() =>{
+        const {dispatch} = this.props;
+        dispatch({
+            type:"housecontent/getHouseDetail",
+            payload:{
+                id:261565
+            }
+        })
+    }
+
+    getSomeHouse= () =>{
+        const {dispatch} = this.props;
+        dispatch({
+            type:'housecontent/getSomeHouse',
+            payload:{
+                id:261565
+            }
+        })
+    }
+
+    getOwnerInfo = () =>{
+        const {dispatch} = this.props;
+        dispatch({
+            type:'housecontent/getOwnerInfoByHouseId',
+            payload:{
+                id:261565
+            }
+        })
+    }
+
+    onTag=()=> {
+        const{dispatch} = this.props;
+        const {housecontent:{houseinfo}} = this.props;
+        const {logincheck:{userinfo}} = this.props;
+        dispatch({
+            type:'housecontent/collectHouse',
+            payload:{
+                houseId:houseinfo[0].house_id,
+                userId:userinfo[0].user_id,
+            }
+        })
+    }
+
     render() {
+        const {housecontent:{houseinfo}} = this.props;
+        const {logincheck:{userinfo}} = this.props;
+
         return (
             <div>
                 <HeaderFixed />
@@ -48,7 +100,7 @@ class HouseDetail extends Component {
                         <div className={styles.keeper}>
                             <h2>联系房东</h2>
                                 <div className={styles.keeper_img}>
-                                <img onerror="this.src='//image.ziroom.com/g2m1/M00/64/78/ChAFBluE_FaATtIRAAAoKZ4EKLY876.png'" src="http://pic.ziroom.com/steward_images/60019473.png" alt="" />
+                                <img  src="http://pic.ziroom.com/steward_images/60019473.png" alt="" />
                                 </div>
                                 <div className={styles.keeper_info}>
                                     <p className={styles.n}>张三</p>
@@ -57,29 +109,29 @@ class HouseDetail extends Component {
                             </div>
                     </div>
                     <div className={styles.info_aside}>
-                        <h1 className={styles.name}>君安卫士花园·三居室-03卧</h1>
+        <h1 className={styles.name}>{houseinfo.length>0 ? houseinfo[0].house_name : '' }</h1>
                         <div className={styles.price}>
                             <span>￥</span>
-                            <span>1130</span>
+                            <span>{houseinfo.length>0 ? houseinfo[0].house_price : '' }</span>
                             <span>/月</span>
                         </div>
                         <div className={styles.tags}>
-                            <span className={styles.tag}>有阳台</span>
-                            <span className={styles.tag}>有独卫</span>
-                            <span className={styles.tag}>近地铁</span>
+                            <span className={styles.tag}>{houseinfo.length>0 && houseinfo[0].house_balcony ? '有阳台' : '' }</span>
+                            <span className={styles.tag}>{houseinfo.length>0 && houseinfo[0].house_toilet ? '有独卫' : '' }</span>
+                            <span className={styles.tag}>{houseinfo.length>0 && houseinfo[0].house_subway ? '近地铁' : '' }</span>
                         </div>
                         <div className={styles.home_info}>
                             <div className={styles.home_b}>
                                 <dl> 
-                                    <dd>13.9m²</dd>
+        <dd>{houseinfo.length>0 ? houseinfo[0].house_area : '' }m²</dd>
                                     <dt>使用面积</dt>
                                 </dl>
                                 <dl> 
-                                    <dd>朝南</dd>
+                                    <dd>{houseinfo.length>0 ? houseinfo[0].house_position : '' }</dd>
                                     <dt>朝向</dt>
                                 </dl>
                                 <dl> 
-                                    <dd>3室1厅</dd>
+                                    <dd>{houseinfo.length>0 ? houseinfo[0].house_type : '' }</dd>
                                     <dt>户型</dt>
                                 </dl>
                             </div>
@@ -87,36 +139,39 @@ class HouseDetail extends Component {
                                 <li>
                                     <span className={styles.la}>位置</span>
                                     <span className={styles.va}>
-                                        <span className={styles.ad}>天府五街-中和</span>
+                                        <span className={styles.ad}>{houseinfo.length>0 ? houseinfo[0].house_location : '' }</span>
                                     </span>
                                 </li>
                                 <li>
                                     <span className={styles.la}>楼层</span>
                                     <span className={styles.va}>
-                                        <span className={styles.ad}>4/16</span>
+                                        <span className={styles.ad}>{houseinfo.length>0 ? houseinfo[0].house_floor : '' }</span>
                                     </span>
                                 </li>
                                 <li>
                                     <span className={styles.la}>电梯</span>
                                     <span className={styles.va}>
-                                        <span className={styles.ad}>有</span>
+                                        <span className={styles.ad}>{houseinfo.length>0 && houseinfo[0].house_balcony ? '有' : '无' }</span>
                                     </span>
                                 </li>
                                 <li>
                                     <span className={styles.la}>年代</span>
                                     <span className={styles.va}>
-                                        <span className={styles.ad}>2009年建成</span>
+                                        <span className={styles.ad}>{houseinfo.length>0 ? houseinfo[0].house_buildYear : '' }</span>
                                     </span>
                                 </li>
                                 <li>
                                     <span className={styles.la}>门锁</span>
                                     <span className={styles.va}>
-                                        <span className={styles.ad}>智能门锁</span>
+                                        <span className={styles.ad}>{houseinfo.length>0 ? houseinfo[0].house_lock: '' }</span>
                                     </span>
                                 </li>
                             </ul>
-                            <div className={styles.tag}>
-                                <a className={styles.tag_prelook}>
+                            <div className={styles.tag} style={{ background:userinfo.length>0 ? '#ff961e':'rgb(243, 243, 243)'}}>
+                                <a 
+                                className={styles.tag_prelook}
+                                onClick={ userinfo.length>0 ? this.onTag : ''}
+                                >
                                     收藏房屋
                                 </a>
                             </div>
@@ -140,4 +195,7 @@ class HouseDetail extends Component {
     }
 }
 
-export default HouseDetail;
+export default connect(({ housecontent, logincheck })=>( {
+    housecontent,
+    logincheck
+}))(HouseDetail);

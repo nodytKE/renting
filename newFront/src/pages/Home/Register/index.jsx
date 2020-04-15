@@ -89,22 +89,8 @@ class Login extends React.Component {
                         >
                             <Input />
                         </Form.Item>
-                        <Form.Item
-                            name={['user', 'age']}
-                            label="Age"
-                            rules={[
-                                {
-                                    type: 'number',
-                                    min: 0,
-                                    max: 99,
-                                },
-                            ]}
-                        >
-                            <InputNumber />
-                        </Form.Item>
-                        <Form.Item name={['user', 'introduction']} label="自我介绍">
-                            <Input.TextArea />
-                        </Form.Item>
+                      
+                    
                         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
                             <Button type="primary" htmlType="submit">
                                 注册

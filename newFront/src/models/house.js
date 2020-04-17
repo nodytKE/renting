@@ -1,4 +1,4 @@
-import {getAllHouse, getHouseDetail, collectHouse, getSomeHouse, getOwnerInfoByHouseId} from '@/services/house';
+import {getAllHouse, getHouseDetail, getHouseByOwnerId, collectHouse,cancelTagHouse, getSomeHouse,getCollectionByUserId, getOwnerInfoByHouseId} from '@/services/house';
 
 export default {
     namespace:'housecontent',
@@ -8,6 +8,9 @@ export default {
         houseCollectCallback:[],
         someHouse:[],
         ownerInfo:[],
+        userCollection:[],
+        cancelCallback:[],
+        oneOwnerHouse:[],
     },
     effects:{
         *getHouse({payload}, {call, put}){
@@ -44,6 +47,27 @@ export default {
                 type:'getOwnerInfo',
                 payload:response
             })
+        },
+        *getCollectByUserId({payload},{call,put}) {
+            const response = yield call (getCollectionByUserId, payload);
+            yield put({
+                type:'getUserCollection',
+                payload:response
+            })
+        },
+        *cancelTagHouse({payload},{call,put}) {
+            const response = yield call (cancelTagHouse, payload);
+            yield put({
+                type:'cancelTag',
+                payload:response
+            })
+        },
+        *getHouseByOwnerId({payload},{call,put}) {
+            const response = yield call (getHouseByOwnerId, payload);
+            yield put ({
+                type:'getOneOwnerHouse',
+                payload:response
+            })
         }
         
     },
@@ -76,6 +100,24 @@ export default {
             return{
                 ...state,
                 ownerInfo:action.payload.data
+            }
+        },
+        getUserCollection(state,action) {
+            return{
+                ...state,
+                userCollection:action.payload.data
+            }
+        },
+        cancelTag(state,action) {
+            return{
+                ...state,
+                cancelCallback:action.payload.data
+            }
+        },
+        getOneOwnerHouse(state,action) {
+            return{
+                ...state,
+                oneOwnerHouse:action.payload.data
             }
         }
         

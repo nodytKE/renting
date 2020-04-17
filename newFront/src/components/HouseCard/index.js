@@ -5,43 +5,43 @@ import picSrc from '../../assets/housePic.jpg'
 class HouseCard extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = {}
     }
-    render() { 
-        return ( 
+
+    render() {
+        const { item } = this.props;
+        console.log(item)
+        return (
             <div className={styles.item}>
                 <div className={styles.pic_box}>
                     <a className={styles.pic_wrap}>
-                        <img src={picSrc}></img>
+                        <img src={picSrc} />
                     </a>
                 </div>
                 <div className={styles.info_box}>
                     <h5 className={styles.title}>
-                        <a>合租·冰江合成</a>
+                        <a>{item.house_name}</a>
                     </h5>
                     <div className={styles.desc}>
-                        <div>6m² | 4/39层</div>
+                        <div>{item.house_area}m² | {item.house_floor}层</div>
                     </div>
                     <div className={styles.location}>
-                        天府三街
+                        {item.house_location}
                     </div>
                     <div className={styles.price}>
                         <span className={styles.rmb}>¥</span>
-                        <span className={styles.unit}>630/月</span>
+                        <span className={styles.unit}>{item.house_price}/月</span>
                     </div>
                     <div className={styles.tag}>
-                        <span>朝南</span>
-                        <span>有阳台</span>
-                        <span>独卫</span>
-                        <span>近地铁</span>
-                    </div>
-                    <div className={styles.tips}>
-                        联系方式:小明
+                        <span className={ item.house_position ? styles.smallTag : ''}>{item.house_position}</span>
+                        <span className={ item.house_balcony ? styles.smallTag : ''}>{item.house_balcony ? '有阳台' : ''}</span>
+                        <span className={ item.house_toilet ? styles.smallTag : ''}>{item.house_toilet ? '有独卫' : ''}</span>
+                        <span className={ item.house_subway ? styles.smallTag : ''}>{item.house_subway ? '近地铁' : ''}</span>
                     </div>
                 </div>
             </div>
-         );
+        );
     }
 }
- 
+
 export default HouseCard;

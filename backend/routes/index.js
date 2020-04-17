@@ -179,7 +179,7 @@ router.post('/collect',(req,res) => {
 // 查询收藏
 router.get('/getcollect',(req,res) => {
   // let sql = `select * from houseInfo where house_id in (select house_id from userCollect where user_id = '${req.query.userId}')`
-  let sql = `select * from houseInfo join userCollect on houseInfo.house_id = userCollect.house_id where userCollect.user_id= '${req.query.userId}'`
+  let sql = `select * from houseInfo join userCollect on houseInfo.house_id = userCollect.house_id where userCollect.user_id= '${req.query.id}'`
   db.query(sql,(err,result) => {
     if(err){
       res.send({
@@ -190,6 +190,19 @@ router.get('/getcollect',(req,res) => {
       res.send({
         status:200,
         data:result
+      })
+    }
+  })
+})
+
+// 取消收藏
+router.post('/canceltag',(req,res) => {
+  let sql=`delete from userCollect where house_id = '${req.body.houseId} and user_id = '${req.body.userId}'`
+  db.query(sql,(err,result)=> {
+    if(result){
+      res.send({
+        status:200,
+        data:'done'
       })
     }
   })
@@ -244,17 +257,34 @@ router.get('/getsomehouse',(req,res)=>{
   let sql = ` select * from houseInfo where house_id in (select house_id from ownerHouse where user_id =(select user_id from ownerHouse where house_id = '${req.query.id}'))`
   db.query(sql,(err,result) =>{
     if(result){
-      res.send(result)
+      res.send(
+       { data:result}
+      )
+    }
+  })
+})
+
+// 根据房东id查看其下房源
+router.get('/gethousebyownerid',(req,res)=> {
+  let sql = `select * from houseInfo join ownerHouse on houseInfo.house_id = ownerHouse.house_id where ownerHouse.user_id = '${req.query.id}'`
+  db.query(sql,(err,result) => {
+    if(result){
+      res.send({
+        data:result,
+        status:200
+      })
     }
   })
 })
 
 //根据某个房源获取房东的信息
 router.get('/getownerinfo',(req,res) => {
-  let sql = `select * from userInfo where user_id = (select user_id from ownerHouse where house_id = '${req.query.id}'))`
+  let sql = `select * from userInfo where user_id = (select user_id from ownerHouse where house_id = '${req.query.id}')`
   db.query(sql,(err,result) => {
     if(result){
-      res.send(result)
+      res.send({
+        data:result
+      })
     }
   })
 })

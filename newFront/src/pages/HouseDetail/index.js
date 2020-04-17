@@ -19,6 +19,7 @@ class HouseDetail extends Component {
     componentDidMount(){
         this.getHouseDetail()
         this.getSomeHouse()
+        this.getOwnerInfo()
     }
 
     getHouseDetail=() =>{
@@ -65,9 +66,8 @@ class HouseDetail extends Component {
     }
 
     render() {
-        const {housecontent:{houseinfo}} = this.props;
+        const {housecontent:{houseinfo, ownerInfo}} = this.props;
         const {logincheck:{userinfo}} = this.props;
-
         return (
             <div>
                 <HeaderFixed />
@@ -92,9 +92,9 @@ class HouseDetail extends Component {
                         </Carousel>
                         <div className={styles.scrollid}>
                             <h2>房源简介</h2>
-                            <p className={styles.sourcecode}>编号   dhjkuagshd</p>
+        <p className={styles.sourcecode}>编号   {houseinfo.length>0 ? houseinfo[0].house_id : ''}</p>
                             <div className={styles.desc}>
-                                特色房源，精致小窝，视野好，采光好，良好的通风，优美的小区环境，自然清新，舒适私密 ，健全的安保设施，近地铁，生活购物都是非常方便。管家式服务，专业级保洁，享受美好租住生活。                
+                                {houseinfo.length>0 ? houseinfo[0].house_description : ''}
                             </div>
                         </div>
                         <div className={styles.keeper}>
@@ -103,8 +103,8 @@ class HouseDetail extends Component {
                                 <img  src="http://pic.ziroom.com/steward_images/60019473.png" alt="" />
                                 </div>
                                 <div className={styles.keeper_info}>
-                                    <p className={styles.n}>张三</p>
-                                    <p className={styles.t}>17748135372</p>
+        <p className={styles.n}>{ownerInfo.length>0 ? ownerInfo[0].user_name :''}</p>
+                                    <p className={styles.t}>{ownerInfo.length>0 ? ownerInfo[0].user_tel :''}</p>
                                 </div>
                             </div>
                     </div>

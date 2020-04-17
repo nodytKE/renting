@@ -116,6 +116,18 @@ export default {
           path: '/admin/tag',
           component: './admin/tag',
         },
+        {
+          name: '修改房源信息',
+          hideInMenu: true,
+          path: '/admin/edithouseinfo',
+          component: './admin/EditHouseInfo',
+        },
+        {
+          name: '上架房源',
+          hideInMenu: true,
+          path: '/admin/addhouse',
+          component: './admin/AddHouse',
+        },
       ],
     },
     {

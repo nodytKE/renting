@@ -1,36 +1,47 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, Card, List, Typography } from 'antd';
+
+import { Button, Card, List, Avatar } from 'antd';
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import styles from './style.less';
+import Paragraph from 'antd/lib/skeleton/Paragraph';
 
-const { Paragraph } = Typography;
+const { Meta } = Card;
 
 class Management extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'ownerAndmanagement/fetch',
+      type: 'housecontent/getCollectByUserId',
       payload: {
-        count: 8,
+        id: 1
       },
     });
   }
 
-  render() {
-    const {
-      ownerAndmanagement: { list },
-      loading,
-    } = this.props;
+  cancelTag = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'housecontent/cancelTagHouse'
+    }).then(() => {
+      dispatch({
+        type: 'housecontent/getCollectByUserId',
+        payload: {
+          id: 1
+        },
+      });
+    })
+  }
 
-    const nullData = {};
+  render() {
+    const { housecontent: { userCollection } } = this.props
+    console.log(userCollection)
     return (
       <PageHeaderWrapper  >
         <div className={styles.cardList}>
           <List
             rowKey="id"
-            loading={loading}
+            // loading={loading}
             grid={{
               gutter: 24,
               lg: 3,
@@ -38,40 +49,27 @@ class Management extends Component {
               sm: 1,
               xs: 1,
             }}
-            dataSource={[nullData, ...list]}
+            dataSource={userCollection}
             renderItem={item => {
-              if (item && item.id) {
-                return (
-                  <List.Item key={item.id}>
-                    <Card
-                      hoverable
-                      className={styles.card}
-                      actions={[<a key="option1">详情</a>, <a key="option2">取消收藏</a>]}
-                    >
-                      <Card.Meta
-                        avatar={<img alt="" className={styles.cardAvatar} src={item.avatar} />}
-                        title={<a>{item.title}</a>}
-                        description={
-                          <Paragraph
-                            className={styles.item}
-                            ellipsis={{
-                              rows: 3,
-                            }}
-                          >
-                            {item.description}
-                          </Paragraph>
-                        }
-                      />
-                    </Card>
-                  </List.Item>
-                );
-              }
-
               return (
-                <List.Item>
-                  <Button type="dashed" className={styles.newButton}>
-                    <PlusOutlined /> 新增产品
-                  </Button>
+                <List.Item key={item.id}>
+                  <Card
+                    hoverable
+                    className={styles.card}
+                    actions={[<a key="option1">详情</a>, <a key="option2" onClick={this.cancelTag()}>取消收藏</a>]}
+                  >
+                    <Card.Meta
+                      avatar={<img src='' />}
+                      title={<a>{item.house_name}</a>}
+                      description={
+                        <div>
+                          <div>地址：{item.house_location}</div>
+                          <div>面积：{item.house_area}m²</div>
+                          <div className={styles.description}>描述：{item.house_description}</div>
+                        </div>
+                      }
+                    />
+                  </Card>
                 </List.Item>
               );
             }}
@@ -82,7 +80,7 @@ class Management extends Component {
   }
 }
 
-export default connect(({ ownerAndmanagement, loading }) => ({
-  ownerAndmanagement,
-  loading: loading.models.ownerAndmanagement,
+export default connect(({ housecontent, loading }) => ({
+  housecontent,
+  loading: loading.models.housecontent,
 }))(Management);

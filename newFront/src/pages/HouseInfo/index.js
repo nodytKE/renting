@@ -3,6 +3,7 @@ import styles from './HouseInfo.less';
 import HouseCard from '@/components/HouseCard';
 import { Pagination } from 'antd';
 import HeaderFixed from '../../components/HeaderFixed';
+import { connect } from 'dva';
 
 const typeArr = [
     { name: '不限', value: 0 },
@@ -86,6 +87,10 @@ class HouseInfo extends Component {
     };
 
     componentDidMount() {
+        const {dispatch} = this.props;
+        dispatch({
+            type:'housecontent/getHouse'
+        })
     }
 
     // 类型
@@ -143,12 +148,13 @@ class HouseInfo extends Component {
     };
 
     render() {
+        const {housecontent:{allHouse}} = this.props;
         return (
             <div>
                 <HeaderFixed />
                 <div className={styles.container}>
                     <div className={styles.search}>
-                        <input type="text" className={styles.search_input} placeholder="请输入小区/商圈/地铁站等..." vlaue></input>
+                        <input type="text" className={styles.search_input} placeholder="请输入小区/商圈/地铁站等..." vlaue />
                         <a className={styles.search_btn}>开始找房</a>
                     </div>
                     <div className={styles.filter}>
@@ -239,12 +245,13 @@ class HouseInfo extends Component {
                             </div>
                         </div>
                         <div className={styles.list_box}>
-                            <HouseCard />
-                            <HouseCard />
-                            <HouseCard />
-                            <HouseCard />
-                            <HouseCard />
-                            <HouseCard />
+                          {
+                          allHouse.length>0 ?
+                            allHouse.map(item=>{
+                               return <HouseCard item={item}/>
+                            })
+                            :''
+                         }
                         </div>
                     </div>
                     <Pagination current={this.state.current} onChange={this.onChange} total={50} defaultPageSize={3} />
@@ -253,4 +260,6 @@ class HouseInfo extends Component {
         );
     }
 }
-export default HouseInfo;
+export default connect(({housecontent})=>({
+    housecontent
+}))(HouseInfo);

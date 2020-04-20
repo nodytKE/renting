@@ -1,4 +1,4 @@
-import {getAllHouse, getHouseDetail, getHouseByOwnerId, collectHouse,cancelTagHouse, getSomeHouse,getCollectionByUserId, getOwnerInfoByHouseId} from '@/services/house';
+import {getAllHouse, getHouseDetail,addHouseInfo,resetHouseInfo, getHouseByOwnerId, collectHouse,cancelTagHouse, getSomeHouse,getCollectionByUserId, getOwnerInfoByHouseId} from '@/services/house';
 
 export default {
     namespace:'housecontent',
@@ -11,6 +11,8 @@ export default {
         userCollection:[],
         cancelCallback:[],
         oneOwnerHouse:[],
+        addHOuseCallback:[],
+        resetCallback:[]
     },
     effects:{
         *getHouse({payload}, {call, put}){
@@ -68,8 +70,21 @@ export default {
                 type:'getOneOwnerHouse',
                 payload:response
             })
-        }
-        
+        },
+        *addHouseInfo({payload},{call,put}) {
+            const response = yield call (addHouseInfo, payload);
+            yield put ({
+                type:'addHouse',
+                payload:response
+            })
+        },
+        *resetHouseInfo({payload},{call,put}) {
+            const response = yield call (resetHouseInfo, payload);
+            yield put ({
+                type:'resetHouse',
+                payload:response
+            })
+        },
     },
     reducers: {
         house(state,action) {
@@ -118,6 +133,18 @@ export default {
             return{
                 ...state,
                 oneOwnerHouse:action.payload.data
+            }
+        },
+        addHouse(state,action) {
+            return{
+                ...state,
+                addHOuseCallback:action.payload.data
+            }
+        },
+        resetHouse(state,action) {
+            return{
+                ...state,
+                resetCallback:action.payload.data
             }
         }
         

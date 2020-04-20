@@ -2,14 +2,23 @@ var express = require('express');
 var router = express.Router();
 var app = express()
 var multer = require('multer')
-var upload = multer({ dest: 'uploads/' })
-
 const db =require('./db/connect')
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
 });
+
+var storage = multer.diskStorage({
+  destination: 'public/upload/',
+  filename: function (req, file, cb) {
+     var fileFormat = (file.originalname).split(".");
+     var filename = new Date().getTime();
+     cb(null, filename+ "."+fileFormat[fileFormat.length-1])
+  }
+});
+
+var upload = multer({ storage: storage })
 
 router.all('*', function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -133,7 +142,7 @@ router.get('/gethousedetail',(req,res) => {
 
 // 修改房屋信息
 router.post('/sethouse',(req,res) => {
-  let sql = `update houseInfo set house_name='${req.body.name}', house_price='${req.body.price}', house_balcony='${req.body.balcony}',house_toilet ='${req.body.toilet}', house_subway='${req.body.subway}', house_area='${req.body.area}', house_position='${req.body.position}', house_type='${req.body.type}', house_location='${req.body.location}', house_floor='${req.body.floor}', house_elevator='${req.body.elevator}', house_buildYear = '${req.body.buildYear}' , house_lock ='${req.body.lock}' where house_id='${req.body.id}' `
+  let sql = `update houseInfo set house_name='${req.body.houseName}', house_price='${req.body.price}', house_balcony='${req.body.balcony}',house_toilet ='${req.body.toilet}', house_subway='${req.body.subway}', house_area='${req.body.area}', house_position='${req.body.position}', house_type='${req.body.type}', house_location='${req.body.location}', house_floor='${req.body.floor}', house_elevator='${req.body.elevator}', house_buildYear = '${req.body.buildYear}' , house_lock ='${req.body.lock}' where house_id='${req.body.id}' `
   db.query(sql,(err,result)=> {
     if(err){
       res.send({
@@ -144,10 +153,16 @@ router.post('/sethouse',(req,res) => {
     }else{
       res.send({
         status:200,
-        msg:'修改成功'
+        msg:'修改成功',
+        data:result
       })
     }
   })
+})
+
+// 修改房屋图片
+router.post('/setImg',upload.array('avatar',4),(req,res)=>{
+  console.log(req.file)
 })
 
 // 点击收藏之后
@@ -210,9 +225,9 @@ router.post('/canceltag',(req,res) => {
 
 // 上架
 router.post('/putaway',(req,res) => {
-  let sql1 = `insert into ownerHouse(user_id,house_id) values('${req.body.userId}','${req.body.houseId}')`
+  let sql1 = `insert into ownerHouse(user_id,house_id) values('${req.body.userId}',(select house_id from houseInfo where house_name = '${req.body.houseName}'))`
   let sql2 = `select house_name from houseInfo where house_name = '${req.body.houseName}'`
-  let sql3 = ` insert into houseInfo (house_name,house_price,house_balcony,house_toilet,house_subway,house_area,house_position,house_type,house_location,house_floor,house_elevator,house_buildYear,house_lock) values('${req.body.name}', '${req.body.price}', '${req.body.balcony}', '${req.body.toilet}', '${req.body.subway}', '${req.body.area}', '${req.body.position}', '${req.body.type}', '${req.body.location}', '${req.body.floor}', '${req.body.elevator}', '${req.body.buildYear}','${req.body.lock}')`
+  let sql3 = ` insert into houseInfo (house_name,house_price,house_balcony,house_toilet,house_subway,house_area,house_position,house_type,house_location,house_floor,house_elevator,house_buildYear,house_lock) values('${req.body.houseName}', '${req.body.price}', '${req.body.balcony}', '${req.body.toilet}', '${req.body.subway}', '${req.body.area}', '${req.body.position}', '${req.body.type}', '${req.body.location}', '${req.body.floor}', '${req.body.elevator}', '${req.body.buildYear}','${req.body.lock}')`
   db.query(sql2,(err,result) => {
     if(result.length>0){
       res.send({
@@ -220,19 +235,26 @@ router.post('/putaway',(req,res) => {
         msg:'该处房源已经上架了，无需再次上架',
       })
     }else{
-      db.query(sql1,(err,result) => {
+      db.query(sql3,(err,result) => {
         if(result){
-          db.query(sql3,(err,result) => {
-            res.send({
-              status:200,
-              msg:'上架成功'
-            })
+          db.query(sql1,(err,result) => {
+         if(result){
+          res.send({
+            status:200,
+            msg:'上架成功'
           })
+         }else{
+           res.send(err)
+         }
+          })
+        }else{
+          res.send(err)
         }
       })
     }
   })
 })
+
 
 // 下架
 router.post('/stopsell',(req,res) => {
@@ -289,10 +311,21 @@ router.get('/getownerinfo',(req,res) => {
   })
 })
 
+
+
+
+
 // 图像上传
 router.post('/admin/uploadhome',upload.single('avatar'),(req,res)=>{
-  console.log(req.file)
-  res.send('11')
+  let sql = `update userInfo set user_img = "/upload/${req.file.filename}" where user_id = '${req.query.id}'`
+  db.query(sql,(err,result) => {
+    if(result){
+      res.send({
+        status:200,
+        msg:'上传成功'
+      })
+    }
+  })
 })
 
 module.exports = router;

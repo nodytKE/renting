@@ -23,10 +23,6 @@ function beforeUpload(file) {
   return isJpgOrPng && isLt2M;
 }
 
- // 级联选择器
-
- 
-
 class UserInfo extends React.Component {
   constructor(props) {
   
@@ -34,11 +30,13 @@ class UserInfo extends React.Component {
     this.state = { 
       loading:true,
       picLoading:false,
+      id:'',
       name:'',
       email:'',
       location:'',
       password:'',
-      isOn:0
+      isOn:0,
+      imgUrl:'',
      };
   }
 
@@ -67,10 +65,12 @@ class UserInfo extends React.Component {
         const { logincheck: { userinfo } } = this.props;
     userinfo.length>0 ?
     this.setState({
+      id:userinfo[0].user_id,
       name:userinfo[0].user_name,
       email:userinfo[0].user_email,
       location:userinfo[0].user_location,
       password:userinfo[0].user_password,
+      imgUrl:userinfo[0].user_img,
     }): ''
   console.log(userinfo)
     })
@@ -84,9 +84,9 @@ class UserInfo extends React.Component {
       return;
     }
     if (info.file.status === 'done') {
-      getBase64(info.file.originFileObj, imageUrl =>
+      getBase64(info.file.originFileObj, imgUrl =>
         this.setState({
-          imageUrl,
+          imgUrl,
           picLoading: false,
         }),
       );
@@ -157,8 +157,6 @@ class UserInfo extends React.Component {
         <div className="ant-upload-text">Upload</div>
       </div>
     );
-    const { imageUrl } = this.state;
-  
 
     return ( 
       <PageHeaderWrapper className={styles.main}>
@@ -170,11 +168,16 @@ class UserInfo extends React.Component {
         className="avatar-uploader"
         showUploadList={false}
         method="POST"
-        action="http://localhost:3000/admin/uploadhome"
+        action="http://localhost:3000/admin/uploadhome?id=1"
         beforeUpload={beforeUpload}
         onChange={this.handleChange}
       >
-        {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+        {this.state.imgUrl 
+        ? 
+        this.state.imgUrl.split('/')[1] === 'upload' ?
+        <img src={`http://localhost:3000${this.state.imgUrl}` }alt="logo" style={{ width: '100%' }} /> 
+        :  <img src={this.state.imgUrl } alt="avatar" style={{ width: '100%' }} /> 
+        : uploadButton}
       </Upload>
       <span className={styles.info}>上传头像</span>
       </div>

@@ -51,3 +51,19 @@ export async function getHouseByOwnerId(params){
         method:"GET"
     })
 }
+
+// 添加房屋信息
+export async function addHouseInfo(params) {
+    return request('/putaway',{
+        method:'POST',
+        data:params
+    })
+}
+
+// 修改
+export async function resetHouseInfo(params) {
+    return request('/sethouse',{
+        method:'POST',
+        data:params
+    })
+}

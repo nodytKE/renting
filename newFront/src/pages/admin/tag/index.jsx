@@ -1,29 +1,49 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
-import { Card, List, Button } from 'antd';
+import { Card, List, Popconfirm, Button } from 'antd';
 import styles from './index.less';
 import { connect } from 'dva';
 import { PlusOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom'
 
 class Tag extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {
+
+    }
   }
 
   componentDidMount() {
+
+    this.getHouse()
+  }
+
+  getHouse = () => {
     const { dispatch } = this.props;
+    const { logincheck: { userinfo } } = this.props;
     dispatch({
       type: 'housecontent/getHouseByOwnerId',
       payload: {
-        id: 1
+        id: userinfo.length > 0 ? userinfo[0].user_id : ''
       }
     })
   }
 
+  stopSell = (value) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'housecontent/cancelSellingHouse',
+      payload: {
+        houseId: value
+      }
+    }).then(
+      () => this.getHouse()
+    )
+  }
+
   render() {
     const { housecontent: { oneOwnerHouse } } = this.props
-    console.log(oneOwnerHouse)
     return (
       <PageHeaderWrapper  >
         <div className={styles.cardList}>
@@ -39,12 +59,15 @@ class Tag extends React.Component {
             }}
             dataSource={oneOwnerHouse}
             renderItem={item => {
+              console.log(item)
               return (
-                <List.Item key={item.id}>
+                <List.Item key={item.house_id}>
                   <Card
                     hoverable
                     className={styles.card}
-                    actions={[<a key="option1">详情</a>, <a key="option2" >取消收藏</a>]}
+                    actions={[<a key="option1"><Link to={`/admin/edithouseinfo/${item.house_id}`}>编辑</Link></a>, <Popconfirm title="确认下架?" onConfirm={() => this.stopSell(item.house_id)}>
+                      <a>下架</a>
+                    </Popconfirm>]}
                   >
                     <Card.Meta
                       avatar={<img src='' />}
@@ -62,17 +85,19 @@ class Tag extends React.Component {
               );
             }}
           />
-            <List>
-              <Button type="dashed" className={styles.newButton}>
+          <List>
+            <Link to="/admin/addhouse">
+               <Button type="dashed" className={styles.newButton} >
                 <PlusOutlined /> 新上架房屋
                 </Button>
-            </List>
+            </Link>
+          </List>
         </div>
       </PageHeaderWrapper>
     );
   }
 }
 
-export default connect(({ housecontent }) => ({
-  housecontent
+export default connect(({ logincheck, housecontent }) => ({
+  logincheck, housecontent
 }))(Tag);

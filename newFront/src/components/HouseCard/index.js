@@ -10,7 +10,6 @@ class HouseCard extends Component {
 
     render() {
         const { item } = this.props;
-        console.log(item)
         return (
             <div className={styles.item}>
                 <div className={styles.pic_box}>

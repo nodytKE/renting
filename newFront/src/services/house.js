@@ -67,3 +67,11 @@ export async function resetHouseInfo(params) {
         data:params
     })
 }
+
+// 下架房源
+export async function stopSell(params) {
+    return request('/stopsell',{
+        method:'POST',
+        data:params
+    })
+}

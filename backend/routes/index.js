@@ -142,7 +142,7 @@ router.get('/gethousedetail',(req,res) => {
 
 // 修改房屋信息
 router.post('/sethouse',(req,res) => {
-  let sql = `update houseInfo set house_name='${req.body.houseName}', house_price='${req.body.price}', house_balcony='${req.body.balcony}',house_toilet ='${req.body.toilet}', house_subway='${req.body.subway}', house_area='${req.body.area}', house_position='${req.body.position}', house_type='${req.body.type}', house_location='${req.body.location}', house_floor='${req.body.floor}', house_elevator='${req.body.elevator}', house_buildYear = '${req.body.buildYear}' , house_lock ='${req.body.lock}' where house_id='${req.body.id}' `
+  let sql = `update houseInfo set house_name='${req.body.houseName}', house_price='${req.body.price}', house_balcony='${req.body.balcony}',house_toilet ='${req.body.toilet}', house_subway='${req.body.subway}', house_area='${req.body.area}', house_position='${req.body.position}', house_type='${req.body.type}', house_location='${req.body.location}', house_floor='${req.body.floor}', house_elevator='${req.body.elevator}', house_buildYear = '${req.body.buildYear}' , house_lock ='${req.body.lock}',house_description='${req.body.description}' where house_id='${req.body.id}' `
   db.query(sql,(err,result)=> {
     if(err){
       res.send({
@@ -161,8 +161,11 @@ router.post('/sethouse',(req,res) => {
 })
 
 // 修改房屋图片
-router.post('/setImg',upload.array('avatar',4),(req,res)=>{
-  console.log(req.file)
+router.post('/setimg',upload.array('files'),(req,res)=>{
+  console.log(req.files)
+  res.send({
+    status:200
+  })
 })
 
 // 点击收藏之后
@@ -227,7 +230,7 @@ router.post('/canceltag',(req,res) => {
 router.post('/putaway',(req,res) => {
   let sql1 = `insert into ownerHouse(user_id,house_id) values('${req.body.userId}',(select house_id from houseInfo where house_name = '${req.body.houseName}'))`
   let sql2 = `select house_name from houseInfo where house_name = '${req.body.houseName}'`
-  let sql3 = ` insert into houseInfo (house_name,house_price,house_balcony,house_toilet,house_subway,house_area,house_position,house_type,house_location,house_floor,house_elevator,house_buildYear,house_lock) values('${req.body.houseName}', '${req.body.price}', '${req.body.balcony}', '${req.body.toilet}', '${req.body.subway}', '${req.body.area}', '${req.body.position}', '${req.body.type}', '${req.body.location}', '${req.body.floor}', '${req.body.elevator}', '${req.body.buildYear}','${req.body.lock}')`
+  let sql3 = ` insert into houseInfo (house_name,house_price,house_balcony,house_toilet,house_subway,house_area,house_position,house_type,house_location,house_floor,house_elevator,house_buildYear,house_lock,house_description) values('${req.body.houseName}', '${req.body.price}', '${req.body.balcony}', '${req.body.toilet}', '${req.body.subway}', '${req.body.area}', '${req.body.position}', '${req.body.type}', '${req.body.location}', '${req.body.floor}', '${req.body.elevator}', '${req.body.buildYear}','${req.body.lock}','${req.body.description}')`
   db.query(sql2,(err,result) => {
     if(result.length>0){
       res.send({
@@ -258,7 +261,7 @@ router.post('/putaway',(req,res) => {
 
 // 下架
 router.post('/stopsell',(req,res) => {
-  let sql1=` delete from ownerHouse where house_id ='${req.body.housId}'`
+  let sql1=` delete from ownerHouse where house_id ='${req.body.houseId}'`
   let sql2 = `delete from houseInfo where house_id = '${req.body.houseId}'`
   db.query(sql1,(err,result)=>{
     if(result){

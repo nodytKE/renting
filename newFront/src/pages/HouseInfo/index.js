@@ -5,13 +5,8 @@ import { Pagination } from 'antd';
 import HeaderFixed from '../../components/HeaderFixed';
 import { connect } from 'dva';
 
-const typeArr = [
-    { name: '不限', value: 0 },
-    { name: '合租', value: 1 },
-    { name: '整租', value: 1 },
-]
 
-const positionArr = [
+const areaArr = [
     { name: '不限', value: 0 },
     { name: '锦江区', value: 1 },
     { name: '青羊区', value: 2 },
@@ -71,18 +66,19 @@ class HouseInfo extends Component {
 
     state = {
         current: 3,
+        inputValue:'',
         isLandlord: true,
         isLogin: true,
         // inputValue:this.props.location.state.inputValue ? this.props.location.state.inputValue : '',
         inputValue: '',
         type: 0,
-        position: 0,
+        area: 0,
         rentingPrice: 0,
         direction: 0,
         toilet: 0,
         balcony: 0,
         sort: 0,
-
+        houseAfterScreening:[],
 
     };
 
@@ -93,17 +89,16 @@ class HouseInfo extends Component {
         })
     }
 
-    // 类型
-    changeType = (index) => {
-        this.setState({
-            type:index,
-        })
+    setInputValue = e =>{
+       this.setState({
+           inputValue:e.target.value,
+       })
     }
 
     // 修改位置
-    changePosition = (index) => {
+    changeArea = (index) => {
         this.setState({
-            position:index
+            area:index
         })
     }
 
@@ -149,36 +144,50 @@ class HouseInfo extends Component {
 
     render() {
         const {housecontent:{allHouse}} = this.props;
+
+        // 输入框查找
+        const filterInputValue = singleHouse => {
+         return (singleHouse.house_name.includes(this.state.inputValue) !== '-1'
+            || this.state.inputValue === ''
+            || singleHouse.house_location.includes(this.state.inputValue) !=='-1'
+            )
+        }
+       
+        // 区域筛选
+        const filterArea = singleHouse =>{
+            return singleHouse.house_area === this.state.area
+        }
+
+        // 租金筛选
+
+        // const filterRentingPrice = singleHouse => {
+        //     return
+        // }
+
+        const houseAfterScreening =  allHouse.length>0 
+        ?
+         allHouse.filter(filterInputValue) 
+        : 
+         allHouse
+
         return (
             <div>
                 <HeaderFixed />
                 <div className={styles.container}>
                     <div className={styles.search}>
-                        <input type="text" className={styles.search_input} placeholder="请输入小区/商圈/地铁站等..." vlaue />
+                        <input type="text" className={styles.search_input} placeholder="请输入小区/商圈/地铁站等..." onChange={this.setInputValue} value={this.state.inputValue} />
                         <a className={styles.search_btn}>开始找房</a>
                     </div>
                     <div className={styles.filter}>
                         <ul className={styles.f_box}>
                             <li className={styles.f_item}>
-                                <strong className={styles.title}>类型</strong>
-                                <div className={styles.opt}>
-                                    {
-                                        typeArr.map((item, index) => {
-                                            return <a 
-                                            className={index === this.state.type ? styles.active : ''}
-                                            onClick={()=>this.changeType(index)}
-                                            >{item.name}</a>
-                                        })
-                                    }
-                                </div>
-                            </li>
-                            <li className={styles.f_item}>
                                 <strong className={styles.title}>位置</strong>
                                 <div className={styles.opt}>
                                     {
-                                        positionArr.map((item, index) => {
-                                            return <a className={index === this.state.position ? styles.active : ''}
-                                            onClick={()=>this.changePosition(index)}
+                                        areaArr.map((item, index) => {
+                                            return <a className={index === this.state.area ? styles.active : ''}
+                                            onClick={()=>this.changeArea(index)}
+                                            key ={item.name}
                                             >{item.name}</a>
                                         })
                                     }
@@ -191,6 +200,7 @@ class HouseInfo extends Component {
                                         rentPrice.map((item, index) => {
                                             return <a className={index === this.state.rentingPrice ? styles.active : ''}
                                             onClick={()=>this.changeRentingPrice(index)}
+                                            key ={item.name}
                                             >{item.name}</a>
                                         })
                                     }
@@ -202,6 +212,7 @@ class HouseInfo extends Component {
                                 {
                                         direction.map((item, index) => {
                                             return <a className={index === this.state.direction ? styles.active : ''}
+                                            key ={item.name}
                                             onClick={()=>this.changeDirection(index)}
                                             >{item.name}</a>
                                         })
@@ -215,6 +226,7 @@ class HouseInfo extends Component {
                                         toilet.map((item, index) => {
                                             return <a className={index === this.state.toilet ? styles.active : ''}
                                             onClick={()=>this.changeToilet(index)}
+                                            key ={item.name}
                                             >{item.name}</a>
                                         })
                                     }
@@ -227,6 +239,7 @@ class HouseInfo extends Component {
                                         balcony.map((item, index) => {
                                             return <a className={index === this.state.balcony ? styles.active : ''}
                                             onClick={()=>this.changeBalcony(index)}
+                                            key ={item.name}
                                             >{item.name}</a>
                                         })
                                     }
@@ -239,16 +252,19 @@ class HouseInfo extends Component {
                             <div className={styles.option}>
                               {
                                   sortType.map((item,index)=>{
-                                  return <a className={index === this.state.sort ? styles.active : ''} onClick={()=>this.changeSort(index)}>{item.name}</a>
+                                  return <a className={index === this.state.sort ? styles.active : ''}
+                                  key ={item.name}
+                                  onClick={()=>this.changeSort(index)} >{item.name}</a>
                                   })
                               }
                             </div>
                         </div>
                         <div className={styles.list_box}>
                           {
-                          allHouse.length>0 ?
-                            allHouse.map(item=>{
-                               return <HouseCard item={item}/>
+                        //   allHouse.length>0 ?
+                        houseAfterScreening.length>0?
+                        houseAfterScreening.map(item=>{
+                               return <HouseCard item={item} key={item.house_id} />
                             })
                             :''
                          }

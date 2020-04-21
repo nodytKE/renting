@@ -53,15 +53,7 @@ class UserInfo extends React.Component {
 
   // 临时用
   getInfo=() => {
-    const {dispatch} = this.props
-
-    dispatch({
-      type:'logincheck/fetch',
-      payload:{
-        email:'2222@qq.com',
-        password:'123456'
-      }
-    }).then(()=>{
+   
         const { logincheck: { userinfo } } = this.props;
     userinfo.length>0 ?
     this.setState({
@@ -72,9 +64,7 @@ class UserInfo extends React.Component {
       password:userinfo[0].user_password,
       imgUrl:userinfo[0].user_img,
     }): ''
-  console.log(userinfo)
-    })
-  
+  console.log(userinfo[0].user_img)
   }
  
   // 上传头像
@@ -145,7 +135,7 @@ class UserInfo extends React.Component {
         name:this.state.name,
         location:this.state.location,
         password:this.state.password,
-        id:1
+        id:this.state.id
       }
     })
   }
@@ -168,7 +158,7 @@ class UserInfo extends React.Component {
         className="avatar-uploader"
         showUploadList={false}
         method="POST"
-        action="http://localhost:3000/admin/uploadhome?id=1"
+        action={`http://localhost:3000/admin/uploadhome?id=${this.state.id}`}
         beforeUpload={beforeUpload}
         onChange={this.handleChange}
       >

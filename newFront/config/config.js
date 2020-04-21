@@ -99,7 +99,7 @@ export default {
       component: '../layouts/BasicLayout',
       routes: [
         {
-          path: '/admin/home/:id',
+          path: '/admin/home',
           name: '个人中心',
           icon: 'form',
           component: '../pages/admin/userInfo',
@@ -119,7 +119,7 @@ export default {
         {
           name: '修改房源信息',
           hideInMenu: true,
-          path: '/admin/edithouseinfo',
+          path: '/admin/edithouseinfo/:id',
           component: './admin/EditHouseInfo',
         },
         {

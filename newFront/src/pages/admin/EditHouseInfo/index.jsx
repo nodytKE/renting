@@ -39,6 +39,7 @@ class EditHouseInfo extends React.Component {
       elevator:0,
       buildYear:'',
       lock:0,
+      description:'',
       fileList: [
         {
           uid: '-1',
@@ -92,11 +93,12 @@ class EditHouseInfo extends React.Component {
 
   getHouseInfoByHouseId = () => {
     const {dispatch} = this.props;
+    
 
     dispatch({
       type:'housecontent/getHouseDetail',
       payload:{
-        id:261565
+        id:this.props.match.params.id
     }
     }).then(() => {
       const {housecontent: {houseinfo}} = this.props
@@ -115,6 +117,7 @@ class EditHouseInfo extends React.Component {
         elevator:houseinfo[0].house_elevator,
         buildYear:houseinfo[0].house_buildYear,
         lock:houseinfo[0].house_lock,
+        description:houseinfo[0].house_description
       }):''
     })
   }
@@ -200,6 +203,12 @@ class EditHouseInfo extends React.Component {
     })
   }
 
+  onChangeDescription = value=> {
+    this.setState({
+      description:value
+    })
+  }
+
   handleReset=()=>{
     const {dispatch} = this.props;
     dispatch({
@@ -218,13 +227,14 @@ class EditHouseInfo extends React.Component {
         floor:this.state.floor,
         elevator:this.state.elevator,
         buildYear:this.state.buildYear,
-        lock:this.state.lock
+        lock:this.state.lock,
+        description:this.state.description
       }
     })
 }
 
   render() { 
-    const { previewVisible, previewImage, fileList,lock, houseName, price,balcony,toilet,subway,area,position,type,location,floor,elevator,buildYear } = this.state;
+    const { previewVisible, previewImage,description, fileList,lock, houseName, price,balcony,toilet,subway,area,position,type,location,floor,elevator,buildYear } = this.state;
     const uploadButton = (
       <div>
         <PlusOutlined />
@@ -381,6 +391,18 @@ class EditHouseInfo extends React.Component {
                    <Option onClick={()=>this.onChangeLock(1)} value="1">智能门锁</Option>
                    <Option onClick={()=>this.onChangeLock(0)} value="0">普通门锁</Option>
                  </Select>
+               </td>
+             </tr>
+             <tr>
+               <td className={styles.tag}>描述</td>
+               <td colSpan="2" className={styles.name_inp}>
+               <input
+                   type="text"
+                   style={{ width: 180}}
+                   className={styles.ui_inp}
+                   defaultValue={description}
+                   onChange={this.onChangeDescription}
+                 />
                </td>
              </tr>
            </tbody>

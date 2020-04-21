@@ -1,9 +1,10 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
-import { Select, Button, Upload, Modal } from 'antd';
+import { Select, Button, Upload, Modal, message } from 'antd';
 import styles from './index.less';
 import { PlusOutlined } from '@ant-design/icons';
-import {connect} from 'dva'
+import {connect} from 'dva';
+import reqwest from 'reqwest';
 
 const { Option } = Select;
 
@@ -25,7 +26,6 @@ class AddHouse extends React.Component {
       previewVisible: false,
       previewImage: '',
       houseName:'',
-      userId:'',
       price:'',
       balcony:0,
       toilet:0,
@@ -36,26 +36,14 @@ class AddHouse extends React.Component {
       location:'',
       floor:'',
       elevator:0,
+      description:'',
       buildYear:'',
       lock:0,
       img1:'',
       img2:'',
       img3:'',
       img4:'',
-      fileList: [
-        // {
-        //   uid: '-1',
-        //   name: 'image.png',
-        //   status: 'done',
-        //   // url: `https://localhost:3000${img1}`,
-        // },
-        // {
-        //   uid: '-2',
-        //   name: 'image.png',
-        //   status: 'done',
-        //   url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        // },
-      ],
+      fileList: [],
     };
   }
 
@@ -151,14 +139,38 @@ class AddHouse extends React.Component {
     });
   };
 
+  customRequest = () => {
+    const {fileList} = this.state;
+    const formData = new FormData();
+    formData.append('pic1',fileList[0]);
+    formData.append('pic2',fileList[1]);
+    formData.append('pic3',fileList[2]);
+    formData.append('pic4',fileList[3]);
+     
+    reqwest({
+      name:'files',
+      url:'http://localhost:3000/setimg',
+      method:'post',
+      processData:false,
+      data:formData,
+      success:() => {
+        this.setState({
+          fileList,
+        })
+        message.success('upload successfully')
+      }
+    })
+  }
+
   handleChangeUpload = ({ fileList }) => this.setState({ fileList });
 
   handleAdd=()=>{
       const {dispatch} = this.props;
+      const {logincheck:{userinfo}} = this.props
       dispatch({
         type:'housecontent/addHouseInfo',
         payload:{
-          userId:this.state.userId,
+          userId:userinfo.length> 0 ? userinfo[0].user_id : '' ,
           houseName:this.state.houseName,
           price:this.state.price,
           balcony:this.state.balcony,
@@ -175,19 +187,40 @@ class AddHouse extends React.Component {
           img1:this.state.img1,
           img2:this.state.img2,
           img3:this.state.img3,
+          description:this.state.description,
           img4:this.state.img4
         }
       })
   }
 
   render() {
-    const { previewVisible, previewImage, fileList,lock, houseName, price,balcony,toilet,subway,area,position,type,location,floor,elevator,buildYear } = this.state;
+    const { previewVisible, previewImage,description, fileList,lock, houseName, price,balcony,toilet,subway,area,position,type,location,floor,elevator,buildYear } = this.state;
     const uploadButton = (
       <div>
         <PlusOutlined />
         <div className="ant-upload-text">Upload</div>
       </div>
     );
+    const props = {
+      onRemove: (file) => {
+        this.setState((state) => {
+          const index = state.fileList.indexOf(file);
+          const newFileList = state.fileList.slice();
+          newFileList.splice(index, 1);
+          return {
+            fileList: newFileList,
+          };
+        });
+      },
+      beforeUpload: (file) => {
+        this.setState(state => ({
+          fileList: [...state.fileList, file],
+        }));
+        return false;
+      },
+      fileList,
+    };
+
     return (
       <PageHeaderWrapper className={styles.main}>
        <div className={styles.allcontainer}>
@@ -340,25 +373,42 @@ class AddHouse extends React.Component {
                   </Select>
                 </td>
               </tr>
+              <tr>
+               <td className={styles.tag}>描述</td>
+               <td colSpan="2" className={styles.name_inp}>
+               <input
+                   type="text"
+                   style={{ width: 180}}
+                   className={styles.ui_inp}
+                   defaultValue={description}
+                   onChange={this.onChangeDescription}
+                 />
+               </td>
+             </tr>
             </tbody>
           </table>
         </div>
         <div className="clearfix">
         <td className={styles.tag}>上传图片</td>
         <Upload
-          action="http://localhost:3000/setImg"
-          method="POST"
-          listType="picture-card"
-          fileList={this.state.fileList}
-          onPreview={this.handlePreviewUpload}
-          onChange={this.handleChangeUpload}
-          className={styles.uploadPic}
+        name="files"
+          // action="http://localhost:3000/setimg"
+          // name="photos"
+          // method="POST"
+          // customRequest = {this.customRequest}
+          // listType="picture-card"
+          // fileList={this.state.fileList}
+          // onPreview={this.handlePreviewUpload}
+          // onChange={this.handleChangeUpload}
+          // className={styles.uploadPic}
+          {...props}
         >
           {this.state.fileList.length >= 4 ? null : uploadButton}
         </Upload>
         <Modal visible={previewVisible} footer={null} onCancel={this.handleCancelUpload}>
           <img alt="example" style={{ width: '100%' }} src={previewImage} />
         </Modal>
+        <div  onClick={this.customRequest}>提交</div>
       </div>
        </div>
         <div className={styles.submit}><Button type="primary" onClick={this.handleAdd}>添加</Button></div>
@@ -367,6 +417,6 @@ class AddHouse extends React.Component {
   }
 }
  
-export default connect(({housecontent}) => ({
-  housecontent
+export default connect(({housecontent,logincheck}) => ({
+  housecontent,logincheck
 }))(AddHouse);

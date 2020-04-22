@@ -140,57 +140,74 @@ class AddHouse extends React.Component {
   };
 
   customRequest = () => {
-    const {fileList} = this.state;
+    const {description, fileList,lock, houseName, price,balcony,toilet,subway,area,position,type,location,floor,elevator,buildYear} = this.state;
+   
     const formData = new FormData();
     formData.append('pic1',fileList[0]);
     formData.append('pic2',fileList[1]);
     formData.append('pic3',fileList[2]);
     formData.append('pic4',fileList[3]);
-     
+    formData.append('userId',1)
+    formData.append('houseName',houseName);
+    formData.append('price',price);
+    formData.append('balcony',balcony);
+    formData.append('toilet',toilet);
+    formData.append('subway',subway);
+    formData.append('area',area);
+    formData.append('position',position);
+    formData.append('location',location);
+    formData.append('floor',floor);
+    formData.append('type',type);
+    formData.append('elevator',elevator);
+    formData.append('description',description);
+    formData.append('lock',lock);
+    formData.append('buildYear',buildYear);
+
     reqwest({
-      name:'files',
+      name:"files",
       url:'http://localhost:3000/setimg',
       method:'post',
       processData:false,
       data:formData,
+      dataType:'JSON',
       success:() => {
-        this.setState({
-          fileList,
-        })
         message.success('upload successfully')
       }
     })
   }
 
-  handleChangeUpload = ({ fileList }) => this.setState({ fileList });
+  handleChangeUpload = ({ fileList }) => {
+    this.setState({ fileList })
+  }; 
 
   handleAdd=()=>{
-      const {dispatch} = this.props;
-      const {logincheck:{userinfo}} = this.props
-      dispatch({
-        type:'housecontent/addHouseInfo',
-        payload:{
-          userId:userinfo.length> 0 ? userinfo[0].user_id : '' ,
-          houseName:this.state.houseName,
-          price:this.state.price,
-          balcony:this.state.balcony,
-          toilet:this.state.toilet,
-          subway:this.state.subway,
-          area:this.state.area,
-          position:this.state.position,
-          type:this.state.type,
-          location:this.state.location,
-          floor:this.state.floor,
-          elevator:this.state.elevator,
-          buildYear:this.state.buildYear,
-          lock:this.state.lock,
-          img1:this.state.img1,
-          img2:this.state.img2,
-          img3:this.state.img3,
-          description:this.state.description,
-          img4:this.state.img4
-        }
-      })
+      // const {dispatch} = this.props;
+      // const {logincheck:{userinfo}} = this.props;
+      this.customRequest()
+      // dispatch({
+      //   type:'housecontent/addHouseInfo',
+      //   payload:{
+      //     userId:userinfo.length> 0 ? userinfo[0].user_id : '' ,
+      //     houseName:this.state.houseName,
+      //     price:this.state.price,
+      //     balcony:this.state.balcony,
+      //     toilet:this.state.toilet,
+      //     subway:this.state.subway,
+      //     area:this.state.area,
+      //     position:this.state.position,
+      //     type:this.state.type,
+      //     location:this.state.location,
+      //     floor:this.state.floor,
+      //     elevator:this.state.elevator,
+      //     buildYear:this.state.buildYear,
+      //     lock:this.state.lock,
+      //     img1:this.state.img1,
+      //     img2:this.state.img2,
+      //     img3:this.state.img3,
+      //     description:this.state.description,
+      //     img4:this.state.img4
+      //   }
+      // })
   }
 
   render() {
@@ -391,16 +408,14 @@ class AddHouse extends React.Component {
         <div className="clearfix">
         <td className={styles.tag}>上传图片</td>
         <Upload
-        name="files"
+        
           // action="http://localhost:3000/setimg"
-          // name="photos"
           // method="POST"
-          // customRequest = {this.customRequest}
-          // listType="picture-card"
+          listType="picture-card"
           // fileList={this.state.fileList}
           // onPreview={this.handlePreviewUpload}
           // onChange={this.handleChangeUpload}
-          // className={styles.uploadPic}
+          className={styles.uploadPic}
           {...props}
         >
           {this.state.fileList.length >= 4 ? null : uploadButton}
@@ -408,7 +423,6 @@ class AddHouse extends React.Component {
         <Modal visible={previewVisible} footer={null} onCancel={this.handleCancelUpload}>
           <img alt="example" style={{ width: '100%' }} src={previewImage} />
         </Modal>
-        <div  onClick={this.customRequest}>提交</div>
       </div>
        </div>
         <div className={styles.submit}><Button type="primary" onClick={this.handleAdd}>添加</Button></div>

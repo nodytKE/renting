@@ -3,6 +3,8 @@ var router = express.Router();
 var app = express()
 var multer = require('multer')
 const db =require('./db/connect')
+var multiparty = require("multiparty");
+
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -161,12 +163,75 @@ router.post('/sethouse',(req,res) => {
 })
 
 // 修改房屋图片
-router.post('/setimg',upload.array('files'),(req,res)=>{
-  console.log(req.files)
-  res.send({
-    status:200
+router.post('/setimg',upload.any(),(req,res)=>{
+  let img0=''
+  let img1=''
+  let img2=''
+  let img3 =''
+  if(req.files[0]){
+     img0 = req.files[0].filename
+  }else{
+     img0 = null
+  }
+  if(req.files[1]){
+     img1 = req.files[1].filename
+  }else{
+     img1 = null
+  }
+  if(req.files[2]){
+     img2 = req.files[2].filename
+  }else{
+     img2 = null
+  }
+  if(req.files[3]){
+     img3 = req.files[3].filename
+  }else{
+     img3 = null
+  }
+  let sql1 = `insert into ownerHouse(user_id,house_id) values('${req.body.userId}',(select house_id from houseInfo where house_name = '${req.body.houseName}'))`
+  let sql2 = `select house_name from houseInfo where house_name = '${req.body.houseName}'`
+  let sql3 = ` insert into houseInfo (house_name,house_price,house_balcony,house_toilet,house_subway,house_area,house_position,house_type,house_location,house_floor,house_elevator,house_buildYear,house_lock,house_description,house_img0,house_img1,house_img2,house_img3) values('${req.body.houseName}', '${req.body.price}', '${req.body.balcony}', '${req.body.toilet}', '${req.body.subway}', '${req.body.area}', '${req.body.position}', '${req.body.type}', '${req.body.location}', '${req.body.floor}', '${req.body.elevator}', '${req.body.buildYear}','${req.body.lock}','${req.body.description}','${img0}','${img1}','${img2}','${img3}')`
+  db.query(sql2,(err,result) => {
+    if(result.length>0){
+      res.send({
+        code:8,
+        msg:'该处房源已经上架了，无需再次上架',
+      })
+    }else{
+      db.query(sql3,(err,result) => {
+        if(result){
+          db.query(sql1,(err,result) => {
+         if(result){
+          res.send({
+            status:200,
+            msg:'上架成功'
+          })
+         }else{
+           res.send(err)
+         }
+          })
+        }else{
+          res.send(err)
+        }
+      })
+    }
   })
 })
+
+//两种方法
+// router.post('/setimg',(req,res)=>{
+//   var form = new multiparty.Form({ uploadDir: './public/images' });
+//   form.parse(req, function(err, fields, files) {
+//     console.log( files)
+//     if (err) {
+//       res.send(err)
+//     } else {
+//       res.send({
+//         status:200
+//       })
+//     }
+// });
+// })
 
 // 点击收藏之后
 router.post('/collect',(req,res) => {
@@ -227,10 +292,10 @@ router.post('/canceltag',(req,res) => {
 })
 
 // 上架
-router.post('/putaway',(req,res) => {
+router.post('/putaway',upload.any(),(req,res) => {
   let sql1 = `insert into ownerHouse(user_id,house_id) values('${req.body.userId}',(select house_id from houseInfo where house_name = '${req.body.houseName}'))`
   let sql2 = `select house_name from houseInfo where house_name = '${req.body.houseName}'`
-  let sql3 = ` insert into houseInfo (house_name,house_price,house_balcony,house_toilet,house_subway,house_area,house_position,house_type,house_location,house_floor,house_elevator,house_buildYear,house_lock,house_description) values('${req.body.houseName}', '${req.body.price}', '${req.body.balcony}', '${req.body.toilet}', '${req.body.subway}', '${req.body.area}', '${req.body.position}', '${req.body.type}', '${req.body.location}', '${req.body.floor}', '${req.body.elevator}', '${req.body.buildYear}','${req.body.lock}','${req.body.description}')`
+  let sql3 = ` insert into houseInfo (house_name,house_price,house_balcony,house_toilet,house_subway,house_area,house_position,house_type,house_location,house_floor,house_elevator,house_buildYear,house_lock,house_description,house_img0,house_img1,house_img2,house_img3) values('${req.body.houseName}', '${req.body.price}', '${req.body.balcony}', '${req.body.toilet}', '${req.body.subway}', '${req.body.area}', '${req.body.position}', '${req.body.type}', '${req.body.location}', '${req.body.floor}', '${req.body.elevator}', '${req.body.buildYear}','${req.body.lock}','${req.body.description}','${req.files[0].path}? ${req.files[0].path} : null','${req.files[1].path}? ${req.files[1].path} : null','${req.files[2].path}? ${req.files[2].path} : null','${req.files[3].path}? ${req.files[3].path} : null')`
   db.query(sql2,(err,result) => {
     if(result.length>0){
       res.send({

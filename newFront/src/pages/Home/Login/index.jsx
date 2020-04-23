@@ -1,4 +1,4 @@
-import { Modal, Button, Form, Input, Checkbox } from 'antd';
+import { Modal, Button, Form, Input,message, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import React from 'react';
 import {connect} from 'dva'
@@ -18,9 +18,6 @@ class Login extends React.Component {
   };
 
   handleOk = e => {
-    this.setState({
-      visible: false,
-    });
 
     const {dispatch} = this.props;
     dispatch({
@@ -28,6 +25,13 @@ class Login extends React.Component {
       payload:{
         email:this.state.email,
         password:this.state.password
+      }
+    }).then(()=>{
+      const {logincheck:{userinfo}} = this.props;
+      if (userinfo.code ===103){
+        message.error('账号或密码错误！')
+      } else{
+        message.success('登录成功')
       }
     })
   };
@@ -43,6 +47,7 @@ class Login extends React.Component {
       password:e.target.value
     })
   }
+
   handleCancel = e => {
     this.setState({
       visible: false,
@@ -58,7 +63,6 @@ class Login extends React.Component {
         <Modal
           title="登录账号"
           visible={this.state.visible}
-          onOk={this.handleOk}
           onCancel={this.handleCancel}
           footer={
             []

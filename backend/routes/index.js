@@ -45,7 +45,10 @@ router.get('/getlogin', (req, res) => {
       }else{
         res.send({
           code:0,
-          msg:'账号或密码错误'
+          msg:'账号或密码错误',
+          data:{
+            code:103
+          }
         })
       }
   })
@@ -66,30 +69,44 @@ router.get('/getuserinfo',(req,res) => {
 
 //注册
 router.post('/register',(req,res) =>{
-  let sql1 = `insert into userInfo(user_name,user_img,user_email,user_location,user_password) values('${req.body.name}','${req.body.img}','${req.body.email}','${req.body.location}','${req.body.password}' )`;
+  let sql1 = `insert into userInfo(user_name,user_email,user_password) values('${req.body.name}','${req.body.email}','${req.body.password}' )`;
   let sql2 = `select * from userInfo where user_email ='${req.body.email}'`
-  db.query(sql2,(err,result) => {
-    if(result.length>0){
-      res.send({
-        code:1,
-        msg:'该邮箱已被注册',
-      })
-    }else{
-      db.query(sql1,(err,result) => {
-        if(err){
-          res.send({
-            code:2,
-            msg:'注册失败'
-          })
-        }else{
-          res.send({
-            status:200,
-            msg:'注册成功'
-          })
-        }
-      })
-    }
-  })
+   if(req.body.name=== '' || req.body.password === ''){
+    res.send({
+      code:102,
+      msg:'用户名和密码不能为空'
+    })
+  }else if(req.body.email.indexOf('@') === -1){
+    console.log(req.body.email.indexOf(''))
+    res.send({
+      code:101,
+      msg:'邮箱格式不正确'
+    })
+  }else{
+    db.query(sql2,(err,result) => {
+      if(result.length>0){
+        res.send({
+          code:1,
+          msg:'该邮箱已被注册',
+        })
+      }else{
+        db.query(sql1,(err,result) => {
+          if(err){
+            res.send({
+              code:2,
+              msg:'注册失败'
+            })
+          }else{
+            res.send({
+              status:200,
+              msg:'注册成功'
+            })
+          }
+        })
+      }
+    })
+  }
+
 })
 
 //修改用户信息

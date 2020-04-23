@@ -17,3 +17,9 @@ export async function getUserInfo(params) {
         method:'get'
     })
 }
+export async function register(params) {
+    return request ('/register',{
+        method:'post',
+        data:params
+    })
+}

@@ -8,6 +8,7 @@ import logRegImg from '../../assets/logReg.png';
 import HomeBox from '../../components/HomeBox/index';
 import Login from './Login';
 import Register from './Register';
+import { message } from 'antd'
 
 
 class Home extends React.Component {

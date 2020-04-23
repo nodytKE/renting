@@ -1,16 +1,26 @@
-import { getUserInfo, setUserInfo, getlogin } from '@/services/userinfo';
+import { getUserInfo, setUserInfo,register, getlogin } from '@/services/userinfo';
 
 export default {
     namespace:'logincheck',
     state:{
         userinfo:[],
-        setUserInfoBack:[]
+        setUserInfoBack:[],
+        registerCallBack:[]
     },
     effects: {
         *fetch({payload} , {call ,put}){
             const response = yield call (getlogin, payload);
-            yield put({
-                type:'login',
+          
+                yield put({
+                    type:'login',
+                    payload:response
+                })
+    
+        },
+        *register({payload}, {call,put}){
+            const response = yield call (register,payload);
+            yield put( {
+                type:'registerUser',
                 payload:response
             })
         },
@@ -46,6 +56,12 @@ export default {
             return {
                 ...state,
                 userinfo:action.payload.data
+            }
+        },
+        registerUser(state, action) {
+            return {
+                ...state,
+                registerCallBack:action.payload
             }
         }
     }

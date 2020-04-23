@@ -4,7 +4,7 @@ import HouseCard from '@/components/HouseCard';
 import { Pagination } from 'antd';
 import HeaderFixed from '../../components/HeaderFixed';
 import { connect } from 'dva';
-
+import { RANK_RULE } from '../../constant/constant'
 
 const areaArr = [
     { name: '不限', value: 0 },
@@ -33,30 +33,36 @@ const rentPrice = [
 
 const direction = [
     { name: '不限', value: 0 },
-    { name: '东', value: 1 },
-    { name: '南', value: 2 },
-    { name: '西', value: 3 },
-    { name: '北', value: 4 },
+    { name: '朝东', value: 1 },
+    { name: '朝南', value: 2 },
+    { name: '朝西', value: 3 },
+    { name: '朝北', value: 4 },
 ]
 
 const toilet = [
-    { name: '不限', value: 0 },
+    { name: '不限', value: 9 },
     { name: '有', value: 1 },
-    { name: '无', value: 2 },
+    { name: '无', value: 0 },
 ]
 
 const balcony = [
-    { name: '不限', value: 0 },
+    { name: '不限', value: 9 },
     { name: '有', value: 1 },
-    { name: '无', value: 2 },
+    { name: '无', value: 0 },
+]
+
+const subway = [
+    { name: '不限', value: 9 },
+    { name: '是', value: 1 },
+    { name: '否', value: 0 },
 ]
 
 const sortType = [
-    {name:'默认排序',value:0},
-    {name:'价格升序',value:0},
-    {name:'价格降序',value:0},
-    {name:'面积升序',value:0},
-    {name:'面积降序',value:0},
+    { name: '默认排序', value: '0' },
+    { name: '价格升序', value: 'RANK_INCREASE_BY_PRICE' },
+    { name: '价格降序', value: 'RANK_DECREASE_BY_PRICE' },
+    { name: '面积升序', value: 'RANK_INCREASE_BY_AREA' },
+    { name: '面积降序', value: 'RANK_DECREASE_BY_AREA' },
 ]
 
 class HouseInfo extends Component {
@@ -65,74 +71,79 @@ class HouseInfo extends Component {
     }
 
     state = {
-        current: 3,
-        inputValue:'',
+        current: 1,
+        inputValue: '',
         isLandlord: true,
         isLogin: true,
         // inputValue:this.props.location.state.inputValue ? this.props.location.state.inputValue : '',
-        inputValue: '',
-        type: 0,
-        area: 0,
+        area: '不限',
         rentingPrice: 0,
-        direction: 0,
-        toilet: 0,
-        balcony: 0,
-        sort: 0,
-        houseAfterScreening:[],
-
+        direction: '不限',
+        toilet: 9,
+        subway: 9,
+        balcony: 9,
+        sort: '0',
+        inputInfo:''
     };
 
     componentDidMount() {
-        const {dispatch} = this.props;
+        const { dispatch } = this.props;
         dispatch({
-            type:'housecontent/getHouse'
+            type: 'housecontent/getHouse'
         })
     }
 
-    setInputValue = e =>{
-       this.setState({
-           inputValue:e.target.value,
-       })
+    setInputValue = e => {
+        this.setState({
+            inputValue: e.target.value,
+        })
     }
 
     // 修改位置
-    changeArea = (index) => {
+    changeArea = (item) => {
         this.setState({
-            area:index
+            area: item.name
         })
     }
 
     // 租金
     changeRentingPrice = (index) => {
         this.setState({
-            rentingPrice:index
+            rentingPrice: index
         })
     }
 
     // 朝向
-    changeDirection = (index) => {
+    changeDirection = (value) => {
         this.setState({
-            direction:index
+            direction: value
         })
     }
 
     // 独卫
-    changeToilet = (index) =>{
+    changeToilet = (index) => {
         this.setState({
-            toilet:index
+            toilet: index
         })
     }
 
     // 阳台
     changeBalcony = (index) => {
         this.setState({
-            balcony:index
+            balcony: index
         })
     }
 
-    changeSort =(index) => {
+    // 地铁
+    changeSubway = (index) => {
         this.setState({
-            sort:index
+            subway: index
+        })
+    }
+
+    changeSort = (value) => {
+        this.setState({
+            sort: value
         })
     }
 
@@ -143,40 +154,115 @@ class HouseInfo extends Component {
     };
 
     render() {
-        const {housecontent:{allHouse}} = this.props;
+        const { housecontent: { allHouse } } = this.props;
 
         // 输入框查找
         const filterInputValue = singleHouse => {
-         return (singleHouse.house_name.includes(this.state.inputValue) !== '-1'
-            || this.state.inputValue === ''
-            || singleHouse.house_location.includes(this.state.inputValue) !=='-1'
+            return (singleHouse.house_name.includes(this.state.inputInfo)
+                || this.state.inputInfo === ''
+                || singleHouse.house_location.includes(this.state.inputInfo)
             )
         }
-       
-        // 区域筛选
-        const filterArea = singleHouse =>{
-            return singleHouse.house_area === this.state.area
+
+        // 位置筛选
+        const filterArea = singleHouse => {
+            return this.state.area !== '不限' ? singleHouse.house_location.includes(this.state.area) : singleHouse
         }
 
         // 租金筛选
 
-        // const filterRentingPrice = singleHouse => {
-        //     return
-        // }
+        const filterRentingPrice = singleHouse => {
+            switch (this.state.rentingPrice) {
+                case 0:
+                    return singleHouse;
+                case 1:
+                    return singleHouse.house_price < 500;
+                case 2:
+                    return singleHouse.house_price >= 500 && singleHouse.house_price < 800;
+                case 3:
+                    return singleHouse.house_price >= 800 && singleHouse.house_price < 1000;
+                case 4:
+                    return singleHouse.house_price >= 1000 && singleHouse.house_price < 1500;
+                case 5:
+                    return singleHouse.house_price >= 1500 && singleHouse.house_price < 2000;
+                case 6:
+                    return singleHouse.house_price >= 2000 && singleHouse.house_price < 3000;
+                case 7:
+                    return singleHouse.house_price >= 3000 && singleHouse.house_price < 5000;
+                case 8:
+                    return singleHouse >= 5000;
+                default:
+                    break;
+            }
+        }
 
-        const houseAfterScreening =  allHouse.length>0 
-        ?
-         allHouse.filter(filterInputValue) 
-        : 
-         allHouse
+        // 朝向筛选
 
+        const filterPosition = singleHouse => {
+            return this.state.direction !== '不限' ? singleHouse.house_position === this.state.direction : singleHouse
+        }
+
+        // 有无独卫
+
+        const filterToilet = singleHouse => {
+            return this.state.toilet !== 9 ? singleHouse.house_toilet === this.state.toilet : singleHouse
+        }
+
+        // 阳台
+
+        const filterBalcony = singleHouse => {
+            return this.state.balcony !== 9 ? singleHouse.house_balcony === this.state.balcony : singleHouse
+        }
+
+        // 近地铁
+        const filterSubway = singleHouse => {
+            return this.state.subway !== 9 ? singleHouse.house_subway === this.state.subway : singleHouse
+        }
+
+        // 升降序
+        const sort = (a,b) => {
+            if(this.state.sort === RANK_RULE.RANK_INCREASE_BY_PRICE){
+                return a.house_price - b.house_price
+            } 
+            if (this.state.sort === RANK_RULE.RANK_DECREASE_BY_PRICE){
+                return b.house_price - a.house_price
+            }
+            if (this.state.sort === RANK_RULE.RANK_INCREASE_BY_AREA){
+                return a.house_area - b.house_area
+            }
+            if (this.state.sort === RANK_RULE.RANK_DECREASE_BY_AREA){
+                return b.house_area - a.house_area
+            }
+            return ''
+        }
+
+        const goSearch =() => {
+            this.setState({
+                inputInfo:this.state.inputValue
+            })
+        }
+
+        let houseAfterScreening = [];
+
+        if (allHouse.length > 0) {
+
+            houseAfterScreening = allHouse
+                .filter(filterArea)
+                .filter(filterRentingPrice)
+                .filter(filterPosition)
+                .filter(filterToilet)
+                .filter(filterBalcony)
+                .filter(filterSubway)
+                .filter(filterInputValue)
+                .sort(sort)
+        }
         return (
             <div>
                 <HeaderFixed />
                 <div className={styles.container}>
                     <div className={styles.search}>
                         <input type="text" className={styles.search_input} placeholder="请输入小区/商圈/地铁站等..." onChange={this.setInputValue} value={this.state.inputValue} />
-                        <a className={styles.search_btn}>开始找房</a>
+                        <a className={styles.search_btn} onClick={goSearch}>开始找房</a>
                     </div>
                     <div className={styles.filter}>
                         <ul className={styles.f_box}>
@@ -184,10 +270,10 @@ class HouseInfo extends Component {
                                 <strong className={styles.title}>位置</strong>
                                 <div className={styles.opt}>
                                     {
-                                        areaArr.map((item, index) => {
-                                            return <a className={index === this.state.area ? styles.active : ''}
-                                            onClick={()=>this.changeArea(index)}
-                                            key ={item.name}
+                                        areaArr.map((item) => {
+                                            return <a className={item.name === this.state.area ? styles.active : ''}
+                                                onClick={() => this.changeArea(item)}
+                                                key={item.name}
                                             >{item.name}</a>
                                         })
                                     }
@@ -199,8 +285,8 @@ class HouseInfo extends Component {
                                     {
                                         rentPrice.map((item, index) => {
                                             return <a className={index === this.state.rentingPrice ? styles.active : ''}
-                                            onClick={()=>this.changeRentingPrice(index)}
-                                            key ={item.name}
+                                                onClick={() => this.changeRentingPrice(index)}
+                                                key={item.name}
                                             >{item.name}</a>
                                         })
                                     }
@@ -209,11 +295,11 @@ class HouseInfo extends Component {
                             <li className={styles.f_item}>
                                 <strong className={styles.title}>朝向</strong>
                                 <div className={styles.opt}>
-                                {
-                                        direction.map((item, index) => {
-                                            return <a className={index === this.state.direction ? styles.active : ''}
-                                            key ={item.name}
-                                            onClick={()=>this.changeDirection(index)}
+                                    {
+                                        direction.map((item) => {
+                                            return <a className={ item.name=== this.state.direction ? styles.active : ''}
+                                                key={item.name}
+                                                onClick={() => this.changeDirection(item.name)}
                                             >{item.name}</a>
                                         })
                                     }
@@ -222,11 +308,24 @@ class HouseInfo extends Component {
                             <li className={styles.f_item}>
                                 <strong className={styles.title}>独卫</strong>
                                 <div className={styles.opt}>
-                                {
-                                        toilet.map((item, index) => {
-                                            return <a className={index === this.state.toilet ? styles.active : ''}
-                                            onClick={()=>this.changeToilet(index)}
-                                            key ={item.name}
+                                    {
+                                        toilet.map((item) => {
+                                            return <a className={item.value === this.state.toilet ? styles.active : ''}
+                                                onClick={() => this.changeToilet(item.value)}
+                                                key={item.name}
+                                            >{item.name}</a>
+                                        })
+                                    }
+                                </div>
+                            </li>
+                            <li className={styles.f_item}>
+                                <strong className={styles.title}>近地铁</strong>
+                                <div className={styles.opt}>
+                                    {
+                                        subway.map((item) => {
+                                            return <a className={item.value === this.state.subway ? styles.active : ''}
+                                                onClick={() => this.changeSubway(item.value)}
+                                                key={item.name}
                                             >{item.name}</a>
                                         })
                                     }
@@ -235,11 +334,11 @@ class HouseInfo extends Component {
                             <li className={styles.f_item}>
                                 <strong className={styles.title}>阳台</strong>
                                 <div className={styles.opt}>
-                                {
-                                        balcony.map((item, index) => {
-                                            return <a className={index === this.state.balcony ? styles.active : ''}
-                                            onClick={()=>this.changeBalcony(index)}
-                                            key ={item.name}
+                                    {
+                                        balcony.map((item) => {
+                                            return <a className={item.value === this.state.balcony ? styles.active : ''}
+                                                onClick={() => this.changeBalcony(item.value)}
+                                                key={item.name}
                                             >{item.name}</a>
                                         })
                                     }
@@ -250,32 +349,39 @@ class HouseInfo extends Component {
                     <div className={styles.list}>
                         <div className={styles.list_filter}>
                             <div className={styles.option}>
-                              {
-                                  sortType.map((item,index)=>{
-                                  return <a className={index === this.state.sort ? styles.active : ''}
-                                  key ={item.name}
-                                  onClick={()=>this.changeSort(index)} >{item.name}</a>
-                                  })
-                              }
+                                {
+                                    sortType.map((item) => {
+                                        return <a className={item.value === this.state.sort ? styles.active : ''}
+                                            key={item.name}
+                                            onClick={() => this.changeSort(item.value)} >{item.name}</a>
+                                    })
+                                }
                             </div>
                         </div>
                         <div className={styles.list_box}>
-                          {
-                        //   allHouse.length>0 ?
-                        houseAfterScreening.length>0?
-                        houseAfterScreening.map(item=>{
-                               return <HouseCard item={item} key={item.house_id} />
-                            })
-                            :''
-                         }
+                            {
+                                //   allHouse.length>0 ?
+                                houseAfterScreening.length > 0 ?
+                                    houseAfterScreening.map((item,index) => {
+                                        return index >= 9*(this.state.current-1) && index <= 9*(this.state.current)-1 ?
+                                        <HouseCard item={item} key={item.house_id} /> : ''
+                                    })
+                                    : ''
+                            }
                         </div>
                     </div>
-                    <Pagination current={this.state.current} onChange={this.onChange} total={50} defaultPageSize={3} />
+                    <Pagination 
+                    current={this.state.current} 
+                    onChange={this.onChange} 
+                    total={houseAfterScreening.length} 
+                    pageSize={9} 
+                    hideOnSinglePage
+                    />
                 </div>
             </div>
         );
     }
 }
-export default connect(({housecontent})=>({
+export default connect(({ housecontent }) => ({
     housecontent
 }))(HouseInfo);

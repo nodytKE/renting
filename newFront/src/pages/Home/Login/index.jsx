@@ -108,12 +108,10 @@ class Login extends React.Component {
           <Checkbox>Remember me</Checkbox>
         </Form.Item>
       </Form.Item>
-
       <Form.Item>
         <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.handleOk}>
           登录
         </Button>
-        没有账号？<a href="">立即注册!</a>
       </Form.Item>
     </Form>
         </Modal>

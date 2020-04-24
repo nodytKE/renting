@@ -9,7 +9,7 @@ function  HomeModule(props){
                    <div className={styles.entrance_desc_box}>
                        <div className={styles.entrance_desc_allow}>
                            <a>
-                               <img src={Point}></img>
+                               <img src={Point} alt="img" />
                            </a>
                        </div>
                        <div className={styles.entrance_desc_cont}>
@@ -20,7 +20,7 @@ function  HomeModule(props){
                </div>
                <div className={styles.pics}>
                    <a>
-                       <img src={props.src}></img>
+                       <img src={props.src} alt="logo" />
                    </a>
                </div>
            </div>

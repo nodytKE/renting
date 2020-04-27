@@ -14,7 +14,7 @@ class HouseDetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            house_id: 261565,
+            house_id: this.props.location.state.houseId,
         }
     }
 
@@ -83,28 +83,28 @@ class HouseDetail extends Component {
                             {
                                 houseinfo.length>0&&houseinfo[0].house_img0 ?
                                     <div className={styles.slick_slide}>
-                                        <img src={`http://localhost:3000${houseinfo[0].house_img0 }`} alt='图片' />
+                                        <img src={`http://49.233.131.99${houseinfo[0].house_img0 }`} alt='图片' />
                                     </div>
                                     : ''
                             }
                             {
                                 houseinfo.length>0&&houseinfo[0].house_img1 ?
                                     <div className={styles.slick_slide}>
-                                        <img src={`http://localhost:3000${houseinfo[0].house_img0}`} alt='图片' />
+                                        <img src={`http://49.233.131.99${houseinfo[0].house_img0}`} alt='图片' />
                                     </div>
                                     : ''
                             }
                             {
                                 houseinfo.length>0&&houseinfo[0].house_img2 ?
                                     <div className={styles.slick_slide}>
-                                        <img src={`http://localhost:3000${houseinfo[0].house_img0}`} alt='图片' />
+                                        <img src={`http://49.233.131.99${houseinfo[0].house_img0}`} alt='图片' />
                                     </div>
                                     : ''
                             }
                             {
                                 houseinfo.length>0&&houseinfo[0].house_img3 ?
                                     <div className={styles.slick_slide}>
-                                        <img src={`http://localhost:3000${houseinfo[0].house_img0}`} alt='图片' />
+                                        <img src={`http://49.233.131.99${houseinfo[0].house_img0}`} alt='图片' />
                                     </div>
                                     : ''
                             }
@@ -119,7 +119,7 @@ class HouseDetail extends Component {
                         <div className={styles.keeper}>
                             <h2>联系房东</h2>
                             <div className={styles.keeper_img}>
-                                <img src={ownerInfo.length > 0 ? `http://localhost:3000${ownerInfo[0].user_img}` : ''} alt="" />
+                                <img src={ownerInfo.length > 0 ? `http://49.233.131.99${ownerInfo[0].user_img}` : ''} alt="" />
                             </div>
                             <div className={styles.keeper_info}>
                                 <p className={styles.n}>{ownerInfo.length > 0 ? ownerInfo[0].user_name : ''}</p>

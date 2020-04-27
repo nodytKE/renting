@@ -165,7 +165,7 @@ class AddHouse extends React.Component {
 
     reqwest({
       name:"files",
-      url:'http://localhost:3000/setimg',
+      url:'http://49.233.131.99/setimg',
       method:'post',
       processData:false,
       data:formData,

@@ -4,7 +4,8 @@ import HouseCard from '@/components/HouseCard';
 import { Pagination } from 'antd';
 import HeaderFixed from '../../components/HeaderFixed';
 import { connect } from 'dva';
-import { RANK_RULE } from '../../constant/constant'
+import { RANK_RULE } from '../../constant/constant';
+import {Link} from 'react-router-dom';
 
 const areaArr = [
     { name: '不限', value: 0 },
@@ -364,7 +365,7 @@ class HouseInfo extends Component {
                                 houseAfterScreening.length > 0 ?
                                     houseAfterScreening.map((item,index) => {
                                         return index >= 9*(this.state.current-1) && index <= 9*(this.state.current)-1 ?
-                                        <HouseCard item={item} key={item.house_id} /> : ''
+                                        <Link to ={{pathname:'/housedetail',state:{ houseId:item.house_id}}} ><HouseCard item={item} key={item.house_id} /></Link> : ''
                                     })
                                     : ''
                             }

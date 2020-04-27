@@ -24,7 +24,7 @@ class HeaderFix extends Component {
                        userinfo.length>0
                             ? <div className={styles.logReg}>
                               <Link className={styles.link}  to='/admin/home'>  欢迎你！{userinfo[0].user_name}</Link>
-                              <Link className={styles.link}  to='/admin/home'><img className={styles.headImg}  src={`http://localhost:3000${userinfo[0].user_img}`}  alt="logo"/></Link>
+                              <Link className={styles.link}  to='/admin/home'><img className={styles.headImg}  src={`http://49.233.131.99${userinfo[0].user_img}`}  alt="logo"/></Link>
                                 </div>
                             : (<div className={styles.logReg}>
                                 <img src={logRegImg} alt="logo"/>

@@ -158,21 +158,20 @@ class UserInfo extends React.Component {
         className="avatar-uploader"
         showUploadList={false}
         method="POST"
-        action={`http://localhost:3000/admin/uploadhome?id=${this.state.id}`}
+        action={`http://49.233.131.99/admin/uploadhome?id=${this.state.id}`}
         beforeUpload={beforeUpload}
         onChange={this.handleChange}
       >
         {this.state.imgUrl 
         ? 
         this.state.imgUrl.split('/')[1] === 'upload' ?
-        <img src={`http://localhost:3000${this.state.imgUrl}` }alt="logo" style={{ width: '100%' }} /> 
+        <img src={`http://49.233.131.99${this.state.imgUrl}` }alt="logo" style={{ width: '100%' }} /> 
         :  <img src={this.state.imgUrl } alt="avatar" style={{ width: '100%' }} /> 
         : uploadButton}
       </Upload>
       <span className={styles.info}>上传头像</span>
       </div>
-    <div className={styles.outBox}>
-    <table>
+     <table>
        <tbody>
          <tr>
            <td className={styles.tag}>昵称</td>
@@ -233,35 +232,6 @@ class UserInfo extends React.Component {
          </tr>
        </tbody>
      </table>
-     <table>
-       <tbody>
-         <tr>
-           <td className={styles.tag}>电话</td>
-           <td colSpan="2" className={styles.name_inp}>
-             <input 
-             type="text" 
-             style={{width:180}} 
-             className={styles.ui_inp} 
-            defaultValue={this.state.name} 
-            onChange={this.onChangeName}
-             />
-           </td>
-         </tr>
-      
-        
-        
-         <tr>
-           <td/>
-          <td>
-          <Button 
-            className={styles.submit}
-            onClick={this.submitChange}
-           >注册房东</Button>
-          </td>
-         </tr>
-       </tbody>
-     </table>
-    </div>
       <div
         style={{
           paddingTop: 100,

@@ -14,7 +14,7 @@ class HouseCard extends Component {
             <div className={styles.item}>
                 <div className={styles.pic_box}>
                     <a className={styles.pic_wrap}>
-                        <img src={picSrc} />
+                        <img src={item.house_img0 ? `http://49.233.131.99${item.house_img0}` : picSrc}  alt="logo"/>
                     </a>
                 </div>
                 <div className={styles.info_box}>

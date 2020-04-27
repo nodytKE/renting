@@ -49,7 +49,9 @@ const errorHandler = error => {
  */
 
 const request = extend({
-  prefix:'http://localhost:3000',
+  prefix:'http://49.233.131.99',
+  // prefix:'http://localhost:3000',
+
   errorHandler,
   // 默认错误处理
   // credentials: 'false', // 默认请求是否带上cookie

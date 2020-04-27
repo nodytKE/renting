@@ -171,7 +171,8 @@ class UserInfo extends React.Component {
       </Upload>
       <span className={styles.info}>上传头像</span>
       </div>
-     <table>
+    <div className={styles.outBox}>
+    <table>
        <tbody>
          <tr>
            <td className={styles.tag}>昵称</td>
@@ -232,6 +233,35 @@ class UserInfo extends React.Component {
          </tr>
        </tbody>
      </table>
+     <table>
+       <tbody>
+         <tr>
+           <td className={styles.tag}>电话</td>
+           <td colSpan="2" className={styles.name_inp}>
+             <input 
+             type="text" 
+             style={{width:180}} 
+             className={styles.ui_inp} 
+            defaultValue={this.state.name} 
+            onChange={this.onChangeName}
+             />
+           </td>
+         </tr>
+      
+        
+        
+         <tr>
+           <td/>
+          <td>
+          <Button 
+            className={styles.submit}
+            onClick={this.submitChange}
+           >注册房东</Button>
+          </td>
+         </tr>
+       </tbody>
+     </table>
+    </div>
       <div
         style={{
           paddingTop: 100,

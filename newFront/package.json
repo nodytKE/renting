@@ -67,6 +67,7 @@
     "dva": "^2.6.0-beta.16",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
+    "nodemailer": "^6.4.6",
     "nzh": "^1.0.4",
     "omit.js": "^1.0.2",
     "path-to-regexp": "2.4.0",

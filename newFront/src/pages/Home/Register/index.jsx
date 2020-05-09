@@ -23,7 +23,9 @@ class Register extends React.Component {
         visible: false,
         email: '',
         username: '',
-        password: ''
+        password2:'',
+        password: '',
+        tel:''
     };
 
     showModal = () => {
@@ -56,6 +58,18 @@ class Register extends React.Component {
         })
     }
 
+    setPassword2 = e => {
+        this.setState({
+            password2: e.target.value
+        })
+    }
+
+    setTel = e => {
+        this.setState({
+            tel:e.target.value
+        })
+    }
+
     submit = () => {
         const { dispatch } = this.props;
         dispatch({
@@ -63,7 +77,9 @@ class Register extends React.Component {
             payload: {
                 email: this.state.email,
                 name: this.state.username,
-                password: this.state.password
+                password: this.state.password,
+                password2:this.state.password2,
+                tel:this.state.tel
             }
         }).then(() =>{
         const {logincheck:{registerCallBack}} =this.props;
@@ -76,7 +92,9 @@ class Register extends React.Component {
                 message.error('用户名和密码不能为空!')
             }else if(registerCallBack.code === 101){
                 message.error('注册失败，邮箱格式不正确')
-            } else {
+            }else if (registerCallBack.code === 103){
+                message.error('注册失败，两次输入密码不一致')
+            }else {
                 message.error('注册失败,该邮箱已被注册')
             }
         })
@@ -131,6 +149,18 @@ class Register extends React.Component {
                                 <Input.Password value={this.state.password} onChange={this.setPassword} />
                             </Form.Item>
                             <Form.Item
+                                label="再次输入密码"
+                                name="密码"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input your password!',
+                                    },
+                                ]}
+                            >
+                                <Input.Password value={this.state.password2} onChange={this.setPassword2} />
+                            </Form.Item>
+                            <Form.Item
                                 label="邮箱"
                                 name="邮箱"
                                 rules={[
@@ -141,6 +171,18 @@ class Register extends React.Component {
                                 ]}
                             >
                                 <Input value={this.state.email} onChange={this.setEmail} />
+                            </Form.Item>
+                            <Form.Item
+                                label="电话号码"
+                                name="电话号码"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input your password!',
+                                    },
+                                ]}
+                            >
+                                <Input value={this.state.tel} onChange={this.setTel} />
                             </Form.Item>
 
 

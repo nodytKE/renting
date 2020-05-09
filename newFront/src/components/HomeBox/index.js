@@ -3,7 +3,7 @@ import styles from './HomeBox.less';
 import HomeModule from './HomeModule/index';
 import rentImg from '../../assets/zufang.jpg';
 import serviceImg from '../../assets/fuwu.jpg';
-import yezhuImg from '../../assets/yezhu.jpg'
+import yezhuImg from '../../assets/fangdong.jpeg'
 import {Link} from 'react-router-dom'
 
 function HomeBar(){

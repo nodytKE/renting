@@ -85,7 +85,11 @@ export default {
       component: '../pages/home',
     },
     {
-      path: '/housedetail',
+      path:'/service',
+      component:'../pages/service'
+    },
+    {
+      path: '/housedetail/:id',
       component: '../pages/HouseDetail',
     },
     {

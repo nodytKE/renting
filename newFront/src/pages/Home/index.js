@@ -8,7 +8,9 @@ import logRegImg from '../../assets/logReg.png';
 import HomeBox from '../../components/HomeBox/index';
 import Login from './Login';
 import Register from './Register';
-import { message } from 'antd'
+import { message } from 'antd';
+import Footer from '@/components/footer'
+import Recommend from '@/components/Recommend/index'
 
 
 class Home extends React.Component {
@@ -19,15 +21,21 @@ class Home extends React.Component {
     }
   }
 
-  inputChange = (e) => {
+  componentDidMount(){
+    const { dispatch } = this.props;
+    dispatch({
+      type:'housecontent/getHouse',
+    }).then(console.log(1))
+  }
 
+  inputChange = (e) => {
     this.setState({
       inputValue: e.target.value
     })
   }
 
   render() {
-    const { logincheck: { userinfo } } = this.props;
+    const { logincheck: { userinfo }, housecontent: { allHouse } } = this.props;
     return (
       <div>
 
@@ -39,7 +47,7 @@ class Home extends React.Component {
             userinfo.length > 0
               ? <div className={styles.userInfo} >
                 <Link className={styles.link} to='/admin/home'>欢迎你！{userinfo[0].user_name}</Link>
-                <Link className={styles.link} to='/admin/home'><img src={`http://49.233.131.99${userinfo[0].user_img}`} alt="logo" /></Link>
+                <Link className={styles.link} to='/admin/home'><img src={ userinfo[0].user_img ? `http://49.233.131.99/backend/upload/${userinfo[0].user_img}` : logRegImg} alt="logo" title="点击进入个人中心" /></Link>
               </div>
               :
               <div className={styles.logReg}>
@@ -57,10 +65,9 @@ class Home extends React.Component {
             <li>
               {
                 userinfo.length > 0 ?
-                  userinfo[0].isOwner ?
+               
                    <Link to={{pathname:'/admin/tag'}}> <a className={styles.owner}>管理房源</a></Link>
-                    :
-                    <Link to={{pathname:'/admin/tag'}}><a className={styles.owner}>成为房东</a></Link>
+                    
                   : ''
               }
             </li>
@@ -75,12 +82,16 @@ class Home extends React.Component {
           </div>
         </div>
         <HomeBox />
+       <div className={styles.recommend}>
+       <Recommend allHouse={allHouse} />
+       </div>
+              <Footer />
       </div>
     );
   }
 }
 
-export default connect(({ logincheck, loading }) => ({
+export default connect(({ logincheck, housecontent }) => ({
   logincheck,
-  loading: loading.models.logincheck
+  housecontent
 }))(Home);

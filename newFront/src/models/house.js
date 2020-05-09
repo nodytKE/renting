@@ -110,7 +110,7 @@ export default {
         houseCollection(state,action) {
             return{
                 ...state,
-                houseCollectCallback:action.payload.data
+                houseCollectCallback:action.payload
             }
         },
         getAnotherHouse(state,action) {
@@ -134,7 +134,7 @@ export default {
         cancelTag(state,action) {
             return{
                 ...state,
-                cancelCallback:action.payload.data
+                cancelCallback:action.payload
             }
         },
         getOneOwnerHouse(state,action) {

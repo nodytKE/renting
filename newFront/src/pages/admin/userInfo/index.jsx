@@ -44,7 +44,7 @@ class UserInfo extends React.Component {
   componentDidMount(){
     setTimeout(()=>{
       this.setLoading()
-    },3000)
+    },2000)
 
     this.getInfo()
   
@@ -64,7 +64,6 @@ class UserInfo extends React.Component {
       password:userinfo[0].user_password,
       imgUrl:userinfo[0].user_img,
     }): ''
-  console.log(userinfo[0].user_img)
   }
  
   // 上传头像
@@ -158,15 +157,13 @@ class UserInfo extends React.Component {
         className="avatar-uploader"
         showUploadList={false}
         method="POST"
-        action={`http://49.233.131.99/admin/uploadhome?id=${this.state.id}`}
+        action={`http://49.233.131.99/backend/admin/uploadhome?id=${this.state.id}`}
         beforeUpload={beforeUpload}
         onChange={this.handleChange}
       >
         {this.state.imgUrl 
         ? 
-        this.state.imgUrl.split('/')[1] === 'upload' ?
-        <img src={`http://49.233.131.99${this.state.imgUrl}` }alt="logo" style={{ width: '100%' }} /> 
-        :  <img src={this.state.imgUrl } alt="avatar" style={{ width: '100%' }} /> 
+        <img src={`http://49.233.131.99/backend/upload/${this.state.imgUrl}` } alt="logo" style={{ width: '100%' }} /> 
         : uploadButton}
       </Upload>
       <span className={styles.info}>上传头像</span>

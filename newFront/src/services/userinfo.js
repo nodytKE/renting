@@ -23,3 +23,10 @@ export async function register(params) {
         data:params
     })
 }
+
+export async function getPassword(params) {
+    return request ('/sendemail', {
+        method: 'post',
+        data:params
+    })
+}

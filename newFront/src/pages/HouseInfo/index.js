@@ -6,6 +6,7 @@ import HeaderFixed from '../../components/HeaderFixed';
 import { connect } from 'dva';
 import { RANK_RULE } from '../../constant/constant';
 import {Link} from 'react-router-dom';
+import Footer from '@/components/footer';
 
 const areaArr = [
     { name: '不限', value: 0 },
@@ -361,11 +362,11 @@ class HouseInfo extends Component {
                         </div>
                         <div className={styles.list_box}>
                             {
-                                //   allHouse.length>0 ?
                                 houseAfterScreening.length > 0 ?
                                     houseAfterScreening.map((item,index) => {
                                         return index >= 9*(this.state.current-1) && index <= 9*(this.state.current)-1 ?
-                                        <Link to ={{pathname:'/housedetail',state:{ houseId:item.house_id}}} ><HouseCard item={item} key={item.house_id} /></Link> : ''
+                                        <Link to ={`housedetail/${item.house_id}`} ><HouseCard item={item} key={item.house_id} /></Link> : ''
+                                        // <Link to ={{pathname:'/housedetail',state:{ houseId:item.house_id}}} ><HouseCard item={item} key={item.house_id} /></Link> : ''
                                     })
                                     : ''
                             }
@@ -379,6 +380,7 @@ class HouseInfo extends Component {
                     hideOnSinglePage
                     />
                 </div>
+               <div style={{marginTop:20}}> <Footer /></div>
             </div>
         );
     }

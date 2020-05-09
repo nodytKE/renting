@@ -24,8 +24,6 @@ class EditHouseInfo extends React.Component {
 
       previewVisible: false,
       previewImage: '',
-      // id:this.props.id,
-      id:261565,
       houseName:'',
       price:'',
       balcony:0,
@@ -41,35 +39,6 @@ class EditHouseInfo extends React.Component {
       lock:0,
       description:'',
       fileList: [
-        {
-          uid: '-1',
-          name: 'image.png',
-          status: 'done',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        },
-        {
-          uid: '-2',
-          name: 'image.png',
-          status: 'done',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        },
-        {
-          uid: '-3',
-          name: 'image.png',
-          status: 'done',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        },
-        {
-          uid: '-4',
-          name: 'image.png',
-          status: 'done',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        },
-        {
-          uid: '-5',
-          name: 'image.png',
-          status: 'error',
-        },
       ],
     };
   }
@@ -117,7 +86,25 @@ class EditHouseInfo extends React.Component {
         elevator:houseinfo[0].house_elevator,
         buildYear:houseinfo[0].house_buildYear,
         lock:houseinfo[0].house_lock,
-        description:houseinfo[0].house_description
+        description:houseinfo[0].house_description,
+        fileList:[
+          {
+            uid:'-1',
+            url:houseinfo[0].house_img0,
+          },
+          {
+            uid:'-2',
+            url:houseinfo[0].house_img1,
+          },
+          {
+            uid:'-3',
+            url:houseinfo[0].house_img2,
+          },
+          {
+            uid:'-4',
+            url:houseinfo[0].house_img3,
+          }
+        ]
       }):''
     })
   }
@@ -228,7 +215,11 @@ class EditHouseInfo extends React.Component {
         elevator:this.state.elevator,
         buildYear:this.state.buildYear,
         lock:this.state.lock,
-        description:this.state.description
+        description:this.state.description,
+        img0:this.state.fileList[0].url,
+        img1:this.state.fileList[1].url,
+        img2:this.state.fileList[2].url,
+        img3:this.state.fileList[3].url,
       }
     })
 }
@@ -409,17 +400,17 @@ class EditHouseInfo extends React.Component {
          </table>
        </div>
        <div className="clearfix">
-       <td className={styles.tag}>上传图片</td>
-       <Upload
-         action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+       {/* <td className={styles.tag}>上传图片</td> */}
+       {/* <Upload
+         action="https://localhost:3000/changeimg"
          listType="picture-card"
          fileList={this.state.fileList}
          onPreview={this.handlePreviewUpload}
          onChange={this.handleChangeUpload}
          className={styles.uploadPic}
        >
-         {this.state.fileList.length >= 8 ? null : uploadButton}
-       </Upload>
+         {this.state.fileList.length >= 4 ? null : uploadButton}
+       </Upload> */}
        <Modal visible={previewVisible} footer={null} onCancel={this.handleCancelUpload}>
          <img alt="example" style={{ width: '100%' }} src={previewImage} />
        </Modal>

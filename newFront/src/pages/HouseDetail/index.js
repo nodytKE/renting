@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
 import HeaderFixed from '../../components/HeaderFixed';
-import pic1 from '../../assets/pic1.jpg';
-import pic2 from '../../assets/pic2.jpg';
-import pic3 from '../../assets/pic3.jpg';
-import pic4 from '../../assets/pic4.jpg';
 import HouseCard from '@/components/HouseCard';
-import { Carousel } from 'antd';
+import { Carousel, message } from 'antd';
+import { connect } from 'dva';
+import Footer from '@/components/footer';
+import { Link } from 'react-router-dom';
 import styles from './index.less';
-import { connect } from 'dva'
+
 
 
 class HouseDetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            house_id: this.props.location.state.houseId,
+            house_id: props.match.params.id,
         }
     }
 
@@ -39,7 +38,7 @@ class HouseDetail extends Component {
         dispatch({
             type: 'housecontent/getSomeHouse',
             payload: {
-                id: 261565
+                id: this.state.house_id
             }
         })
     }
@@ -49,7 +48,7 @@ class HouseDetail extends Component {
         dispatch({
             type: 'housecontent/getOwnerInfoByHouseId',
             payload: {
-                id: 261565
+                id: this.state.house_id
             }
         })
     }
@@ -63,6 +62,15 @@ class HouseDetail extends Component {
             payload: {
                 houseId: houseinfo[0].house_id,
                 userId: userinfo[0].user_id,
+            }
+        }).then(() => {
+            const { housecontent: { houseCollectCallback } } = this.props;
+            if (houseCollectCallback.status) {
+                message.success('收藏成功！')
+            } else if (houseCollectCallback.code === 7) {
+                message.error('已在收藏列表中，请勿重复收藏')
+            } else {
+                message.error('收藏失败!')
             }
         })
     }
@@ -81,30 +89,30 @@ class HouseDetail extends Component {
                             effect="fade"
                         >
                             {
-                                houseinfo.length>0&&houseinfo[0].house_img0 ?
+                                houseinfo.length > 0 && houseinfo[0].house_img0 ?
                                     <div className={styles.slick_slide}>
-                                        <img src={`http://49.233.131.99${houseinfo[0].house_img0 }`} alt='图片' />
+                                        <img src={`http://49.233.131.99/backend/upload/${houseinfo[0].house_img0}`} alt='图片' />
                                     </div>
                                     : ''
                             }
                             {
-                                houseinfo.length>0&&houseinfo[0].house_img1 ?
+                                houseinfo.length > 0 && houseinfo[0].house_img1 ?
                                     <div className={styles.slick_slide}>
-                                        <img src={`http://49.233.131.99${houseinfo[0].house_img0}`} alt='图片' />
+                                        <img src={`http://49.233.131.99/backend/upload/${houseinfo[0].house_img0}`} alt='图片' />
                                     </div>
                                     : ''
                             }
                             {
-                                houseinfo.length>0&&houseinfo[0].house_img2 ?
+                                houseinfo.length > 0 && houseinfo[0].house_img2 ?
                                     <div className={styles.slick_slide}>
-                                        <img src={`http://49.233.131.99${houseinfo[0].house_img0}`} alt='图片' />
+                                        <img src={`http://49.233.131.99/backend/upload/${houseinfo[0].house_img0}`} alt='图片' />
                                     </div>
                                     : ''
                             }
                             {
-                                houseinfo.length>0&&houseinfo[0].house_img3 ?
+                                houseinfo.length > 0 && houseinfo[0].house_img3 ?
                                     <div className={styles.slick_slide}>
-                                        <img src={`http://49.233.131.99${houseinfo[0].house_img0}`} alt='图片' />
+                                        <img src={`http://49.233.131.99/backend/upload/${houseinfo[0].house_img0}`} alt='图片' />
                                     </div>
                                     : ''
                             }
@@ -119,7 +127,7 @@ class HouseDetail extends Component {
                         <div className={styles.keeper}>
                             <h2>联系房东</h2>
                             <div className={styles.keeper_img}>
-                                <img src={ownerInfo.length > 0 ? `http://49.233.131.99${ownerInfo[0].user_img}` : ''} alt="" />
+                                <img src={ownerInfo.length > 0 ? `http://49.233.131.99/backend/upload/${ownerInfo[0].user_img}` : ''} alt="" />
                             </div>
                             <div className={styles.keeper_info}>
                                 <p className={styles.n}>{ownerInfo.length > 0 ? ownerInfo[0].user_name : ''}</p>
@@ -199,20 +207,24 @@ class HouseDetail extends Component {
                     </div>
                     <div className={styles.clearFloat} />
                     <div className={styles.isection}>
-                        <h2 className={styles.recommended}>该房东其他房源</h2>
+                        <h2 className={styles.recommended}>该房东所有房源</h2>
                         <div className={styles.body}>
                             {
 
                                 someHouse.map(item => {
-                                    return item.house_id === this.state.house_id ?
-                                        ''
-                                        : <HouseCard item={item} key={item.house_id}/>
+                                    return  <Link to ={`${item.house_id}` } onClick={()=>{
+                                            this.setState({
+                                                house_id: item.house_id
+                                            },()=>{
+                                                this.getHouseDetail()
+                                            })
+                                        }}><HouseCard item={item} key={item.house_id}  /></Link>
                                 })
                             }
                         </div>
                     </div>
-
                 </div>
+                <Footer />
             </div>
 
         );

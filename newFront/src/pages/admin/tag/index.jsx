@@ -1,10 +1,12 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
-import { Card, List, Popconfirm, Button } from 'antd';
+import { Card, List, Popconfirm, Modal, Button, Input } from 'antd';
 import styles from './index.less';
 import { connect } from 'dva';
 import { PlusOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom'
+
+const { Search } = Input;
 
 class Tag extends React.Component {
   constructor(props) {
@@ -30,6 +32,7 @@ class Tag extends React.Component {
     })
   }
 
+
   stopSell = (value) => {
     const { dispatch } = this.props;
     dispatch({
@@ -44,6 +47,7 @@ class Tag extends React.Component {
 
   render() {
     const { housecontent: { oneOwnerHouse } } = this.props
+    const { logincheck: { userinfo } } = this.props;
     return (
       <PageHeaderWrapper  >
         <div className={styles.cardList}>
@@ -59,7 +63,6 @@ class Tag extends React.Component {
             }}
             dataSource={oneOwnerHouse}
             renderItem={item => {
-              console.log(item)
               return (
                 <List.Item key={item.house_id}>
                   <Card
@@ -87,7 +90,7 @@ class Tag extends React.Component {
           />
           <List>
             <Link to="/admin/addhouse">
-               <Button type="dashed" className={styles.newButton} >
+              <Button type="dashed" className={styles.newButton} >
                 <PlusOutlined /> 新上架房屋
                 </Button>
             </Link>

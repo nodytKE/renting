@@ -1,33 +1,40 @@
 
-import { Button, Card, List, Avatar } from 'antd';
+import { Button, Card, Popconfirm, List, Avatar } from 'antd';
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import styles from './style.less';
 import Paragraph from 'antd/lib/skeleton/Paragraph';
+import { Link } from 'react-router-dom'
 
 const { Meta } = Card;
 
 class Management extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
+    const { logincheck: { userinfo } } = this.props;
     dispatch({
       type: 'housecontent/getCollectByUserId',
       payload: {
-        id: 1
+        id: userinfo.length > 0 ? userinfo[0].user_id : ''
       },
     });
   }
 
-  cancelTag = () => {
+  cancelTag = (value) => {
     const { dispatch } = this.props;
+    const { logincheck: { userinfo } } = this.props;
     dispatch({
-      type: 'housecontent/cancelTagHouse'
+      type: 'housecontent/cancelTagHouse',
+      payload: {
+        houseId: value,
+        userId: userinfo.length > 0 ? userinfo[0].user_id : ''
+      }
     }).then(() => {
       dispatch({
         type: 'housecontent/getCollectByUserId',
         payload: {
-          id: 1
+          id: userinfo.length > 0 ? userinfo[0].user_id : ''
         },
       });
     })
@@ -35,7 +42,6 @@ class Management extends Component {
 
   render() {
     const { housecontent: { userCollection } } = this.props
-    console.log(userCollection)
     return (
       <PageHeaderWrapper  >
         <div className={styles.cardList}>
@@ -56,7 +62,7 @@ class Management extends Component {
                   <Card
                     hoverable
                     className={styles.card}
-                    actions={[<a key="option1">详情</a>, <a key="option2" onClick={this.cancelTag()}>取消收藏</a>]}
+                    actions={[<Link to={{ pathname: '/housedetail', state: { houseId: item.house_id } }}><a key="option1">详情</a></Link>, <Popconfirm title="取消收藏?" onConfirm={() => this.cancelTag(item.house_id)}><a >取消收藏</a></Popconfirm>]}
                   >
                     <Card.Meta
                       avatar={<img src='' />}
@@ -80,7 +86,7 @@ class Management extends Component {
   }
 }
 
-export default connect(({ housecontent, loading }) => ({
+export default connect(({ housecontent, logincheck }) => ({
   housecontent,
-  loading: loading.models.housecontent,
+  logincheck
 }))(Management);

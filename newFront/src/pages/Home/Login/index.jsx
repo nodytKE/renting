@@ -8,7 +8,8 @@ class Login extends React.Component {
   state = { 
     visible: false,
     email:'',
-    password:''
+    password:'',
+    visibleGetPassword: false,
   };
 
   showModal = () => {
@@ -48,11 +49,35 @@ class Login extends React.Component {
     })
   }
 
-  handleCancel = e => {
+  handleCancel = () => {
     this.setState({
       visible: false,
     });
   };
+
+  // 忘记密码之后
+
+  showSendModel = () => {
+    this.setState({
+      visibleGetPassword: true,
+    });
+  }
+
+  handleSendCancel = () => {
+  this.setState({
+      visibleGetPassword: false,
+    });
+  }
+
+  handleSend = () => {
+    const {dispatch} = this.props;
+    dispatch({
+      type:'logincheck/sendEmail',
+      payload:{
+        email:this.state.email
+      }
+    })
+  }
 
   render() {
     return (
@@ -60,6 +85,21 @@ class Login extends React.Component {
         <li className={styles.login} type="primary" onClick={this.showModal}>
           登录
         </li>
+        {/* 找回密码 */}
+        <Modal
+          title="Basic Modal"
+          visible={this.state.visibleGetPassword}
+          onCancel={this.handleSendCancel}
+          
+        >
+          <Input placeholder="请输入注册时的邮箱" onChange={this.inputEmail} />
+          <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.handleSend}>
+          发送密码到邮箱
+        </Button>
+        </Modal>
+
+
+        {/* 登录啥的 */}
         <Modal
           title="登录账号"
           visible={this.state.visible}
@@ -107,6 +147,9 @@ class Login extends React.Component {
         <Form.Item name="remember" valuePropName="checked" noStyle>
           <Checkbox>Remember me</Checkbox>
         </Form.Item>
+        <a className="login-form-forgot" href="" onClick={this.showSendModel}>
+          忘记密码
+        </a>
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.handleOk}>

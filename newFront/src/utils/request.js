@@ -49,8 +49,8 @@ const errorHandler = error => {
  */
 
 const request = extend({
-  prefix:'http://49.233.131.99',
-  // prefix:'http://localhost:3000',
+  // prefix:'http://49.233.131.99/backend',
+  prefix:'http://localhost:3000',
 
   errorHandler,
   // 默认错误处理

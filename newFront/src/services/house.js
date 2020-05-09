@@ -39,7 +39,7 @@ export async function getOwnerInfoByHouseId(params) {
 }
 
 export async function cancelTagHouse(params) {
-    return request (`/canceltag?`,{
+    return request (`/canceltag`,{
         method:'POST',
         data:params
     })

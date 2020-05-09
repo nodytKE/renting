@@ -1,11 +1,13 @@
-import { getUserInfo, setUserInfo,register, getlogin } from '@/services/userinfo';
+import { getUserInfo, setUserInfo,register, getlogin,getPassword,becomeOwner } from '@/services/userinfo';
 
 export default {
     namespace:'logincheck',
     state:{
         userinfo:[],
         setUserInfoBack:[],
-        registerCallBack:[]
+        registerCallBack:[],
+        changeCallback:[],
+        sendCallback:[]
     },
     effects: {
         *fetch({payload} , {call ,put}){
@@ -37,6 +39,20 @@ export default {
                 type:'getInfo',
                 payload:response
             })
+        },
+        *becomeOwner({payload},{call,put}){
+            const response = yield call (becomeOwner,payload);
+            yield put ({
+                type:'becomeOwn',
+                payload:response
+            })
+        },
+        *sendEmail({payload},{call,put}) {
+            const response = yield call (getPassword,payload);
+            yield put ({
+                type:'getPass',
+                payload:response
+            })
         }
     },
     reducers: {
@@ -62,6 +78,18 @@ export default {
             return {
                 ...state,
                 registerCallBack:action.payload
+            }
+        },
+        becomeOwn(state,action) {
+            return {
+                ...state,
+                changeCallback:action.payload
+            }
+        },
+        getPassword( state, action) {
+            return{
+                ...state,
+                sendCallback:action.payload
             }
         }
     }

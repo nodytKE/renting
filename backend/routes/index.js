@@ -443,54 +443,57 @@ router.post('/admin/uploadhome', upload.single('avatar'), (req, res) => {
 
 // 找回邮箱密码
 router.post('/sendemail', (req, res) => {
-  let sql = `select user_password from userInfo where user_email = '${req.body.email}'`
+  let sql = `select user_password from userInfo where user_email = '${req.body.email}' and user_tel = '${req.body.tel}'`
   db.query(sql, (err, result) => {
     if(result){
       if(result.length > 0) {
-        res.send(result)
-        // var email = nodemailer.createTransport({
+        res.send({
+          code:1101,
+          msg:'发送成功'
+        })
+        var email = nodemailer.createTransport({
 
-        //   host: 'smtp.qq.com',//QQ邮箱的服务器
+          host: 'smtp.qq.com',//QQ邮箱的服务器
       
-        //   port: 465,      //端口号
+          port: 465,      //端口号
       
-        //   secure: true, //465为true,其他为false
+          secure: true, //465为true,其他为false
       
-        //   auth: {
+          auth: {
       
-        //     user: '2282215093@qq.com', // 自己的邮箱
+            user: '2282215093@qq.com', // 自己的邮箱
       
-        //     pass: 'ugelbsemhycfeabg'// 授权码
+            pass: 'ugelbsemhycfeabg'// 授权码
       
-        //   }
+          }
       
-        // });
-        // var msg = {
+        });
+        var msg = {
       
-        //   from: '2282215093@qq.com', // 收件人显示的发件人信息
+          from: '2282215093@qq.com', // 收件人显示的发件人信息
       
-        //   to: req.body.email, // 目标邮箱号
+          to: req.body.email, // 目标邮箱号
       
-        //   subject: '您的密码',
+          subject: '您的密码',
       
-        //   text: result[0].user_password // 发送的内容
+          text: result[0].user_password // 发送的内容
       
-        // };
+        };
     
-        // email.sendMail(msg, function (err, data) {
-        //   console.log(msg)
-        //   if(err){
-        //     res.send(err)
-        //   }else {
-        //      res.send({ error: 0, code: 1101 });    //发送完毕后返回
-        //   }
-        //   email.close();      //发送完毕后关闭
+        email.sendMail(msg, function (err, data) {
+          console.log(msg)
+          if(err){
+            res.send(err)
+          }else {
+             res.send({ error: 0, code: 1101 });    //发送完毕后返回
+          }
+          email.close();      //发送完毕后关闭
       
-        // })
+        })
       } else {
         res.send ({
           code:1012,
-          msg:'该邮箱不存在'
+          msg:'邮箱或号码不存在'
         })
       }
     }else{

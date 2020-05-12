@@ -86,7 +86,7 @@ export default {
                 changeCallback:action.payload
             }
         },
-        getPassword( state, action) {
+        getPass( state, action) {
             return{
                 ...state,
                 sendCallback:action.payload

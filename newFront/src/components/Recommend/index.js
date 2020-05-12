@@ -11,7 +11,6 @@ class Recommend extends Component {
 
     render() { 
         const allHouse = this.props.allHouse;
-        console.log(allHouse)
         return ( 
             <div className={styles.recommend}>
                 <div className={styles.wrapper}>

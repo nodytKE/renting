@@ -161,51 +161,23 @@ class AddHouse extends React.Component {
 
     reqwest({
       name: "files",
-      // url:'http://49.233.131.99/backend/setimg',
-      url: 'http://localhost:3000/setimg',
+      url:'http://49.233.131.99/backend/setimg',
+      // url: 'http://localhost:3000/setimg',
       method: 'post',
       processData: false,
       data: formData,
       dataType: 'JSON',
       // contentType: 'multipart/form-data',
       success: () => {
-        message.success('upload successfully')
+        message.success('上架成功');
+        this.props.history.push('/admin/tag')
       }
     })
   }
 
-  handleChangeUpload = ( {fileList} ) => {
-    this.setState({ fileList, })
-  };
 
   handleAdd = () => {
-    // const {dispatch} = this.props;
-    // const {logincheck:{userinfo}} = this.props;
     this.customRequest()
-    // dispatch({
-    //   type:'housecontent/addHouseInfo',
-    //   payload:{
-    //     userId:userinfo.length> 0 ? userinfo[0].user_id : '' ,
-    //     houseName:this.state.houseName,
-    //     price:this.state.price,
-    //     balcony:this.state.balcony,
-    //     toilet:this.state.toilet,
-    //     subway:this.state.subway,
-    //     area:this.state.area,
-    //     position:this.state.position,
-    //     type:this.state.type,
-    //     location:this.state.location,
-    //     floor:this.state.floor,
-    //     elevator:this.state.elevator,
-    //     buildYear:this.state.buildYear,
-    //     lock:this.state.lock,
-    //     img1:this.state.img1,
-    //     img2:this.state.img2,
-    //     img3:this.state.img3,
-    //     description:this.state.description,
-    //     img4:this.state.img4
-    //   }
-    // })
   }
 
   render() {
@@ -216,26 +188,7 @@ class AddHouse extends React.Component {
         <div className="ant-upload-text">Upload</div>
       </div>
     );
-    const props = {
-      onRemove: (file) => {
-        this.setState((state) => {
-          const index = state.fileList.indexOf(file);
-          const newFileList = state.fileList.slice();
-          newFileList.splice(index, 1);
-          console.log(newFileList)
-          return {
-            fileList: newFileList,
-          };
-        });
-      },
-      beforeUpload: (file) => {
-        this.setState(state => ({
-          fileList: [...state.fileList, file],
-        }));
-        return false;
-      },
-      fileList,
-    };
+  
 
     return (
       <PageHeaderWrapper className={styles.main}>
@@ -411,11 +364,27 @@ class AddHouse extends React.Component {
               // action="http://localhost:3000/setimg"
               // method="POST"
               listType="picture-card"
-              fileList={this.state.fileList}
+              // fileList={this.state.fileList}
               onPreview={this.handlePreviewUpload}
-              onChange={this.handleChangeUpload}
               className={styles.uploadPic}
-              {...props}
+              onRemove ={(file) => {
+                this.setState((state) => {
+                  const index = state.fileList.indexOf(file);
+                  const newFileList = state.fileList.slice();
+                  newFileList.splice(index, 1);
+                  return {
+                    fileList: newFileList,
+                  };
+                });}
+              }
+              beforeUpload ={
+                (file) => {
+                  this.setState(state => ({
+                    fileList: [...state.fileList, file],
+                  }));
+                  return false;
+                }
+              }
             >
               {this.state.fileList.length >= 4 ? null : uploadButton}
             </Upload>
